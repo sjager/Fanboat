@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   turtlesim
+  joy
 )
 
 ## System dependencies are found with CMake's conventions
@@ -128,7 +129,10 @@ include_directories(
 # add_dependencies(lab1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(lab1_node src/lab1_node.cpp)
+add_executable(nurse_joy_node src/nurse_joy.cpp)
+target_link_libraries(nurse_joy_node ${catkin_LIBRARIES})
+add_dependencies(nurse_joy_node lab1_generate_messages_cpp)
+
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
