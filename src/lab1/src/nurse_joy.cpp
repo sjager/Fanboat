@@ -12,21 +12,32 @@ void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
   //ROS_INFO("I heard: %i and %i", msg->buttons[0], msg->buttons[1]);
   ROS_INFO("I heard: %5f, %5f", msg->axes[0], msg->axes[1]);
 
+  //Store the original values of the controller
   float xAxis = msg->axes[0];
   float yAxis = msg->axes[1];
 
+  //Stores the final values for the message
   float mot_r;
   float mot_l;
 
+  //If the yAxis is within the band, set to minimum value
+  float minYAxis = yAxis;
+  if(yAxis > -0.12 && yAxis < 0.12){
+    minYAxis = 0.12;
+  }
+
+  //If xAxis is negative, turn right
   if(xAxis < -0.15) {
-    mot_r = yAxis;
-    mot_l = map(xAxis, 0, .8, 0, yAxis);
+    mot_r = minYAxis;
+    mot_l = map(xAxis, 0, 1, 0.1, yAxis);
+  //If xAxis is positive, turn left
   } else if (xAxis > 0.15) {
-    mot_l = yAxis;
-    mot_r = map(xAxis, -0.8, 0, yAxis, 0);
+    mot_l = minYAxis;
+    mot_r = map(xAxis, -1, 0, yAxis, -0.1);
+  //If xAxis is within band, drive straight
   } else {
-    mot_l = yAxis;
-    mot_r = yAxis;
+    mot_l = minYAxis;
+    mot_r = minYAxis;
   }
 
   pubMsg.header = msg->header;
@@ -42,7 +53,7 @@ int main(int argc, char **argv) {
   ros::Publisher pub = n.advertise<fanboat_ll::fanboatMotors>("/motors", 1000);
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(20);
 
   while(ros::ok()) {
     pub.publish(pubMsg);
