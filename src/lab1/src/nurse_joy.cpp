@@ -4,6 +4,9 @@
 
 fanboat_ll::fanboatMotors pubMsg;
 
+const float BAND_WIDTH = 0.12;
+const float DEFAULT_POWER = 0.12;
+
 float map(float x, float in_min, float in_max, float out_min, float out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -22,23 +25,28 @@ void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
 
   //If the yAxis is within the band, set to minimum value
   float minYAxis = yAxis;
-  if(yAxis > -0.12 && yAxis < 0.12){
-    minYAxis = 0.12;
+  if(yAxis > -BAND_WIDTH && yAxis < BAND_WIDTH){
+    minYAxis = DEFAULT_POWER;
   }
 
   //If xAxis is negative, turn right
-  if(xAxis < -0.15) {
+  if(xAxis < -BAND_WIDTH) {
     mot_r = minYAxis;
-    mot_l = map(xAxis, 0, 1, 0.1, yAxis);
+    mot_l = map(xAxis, 0, 1, DEFAULT_POWER, yAxis);
   //If xAxis is positive, turn left
-  } else if (xAxis > 0.15) {
+  } else if (xAxis > BAND_WIDTH) {
     mot_l = minYAxis;
-    mot_r = map(xAxis, -1, 0, yAxis, -0.1);
+    mot_r = map(xAxis, -1, 0, yAxis, -DEFAULT_POWER);
   //If xAxis is within band, drive straight
   } else {
     mot_l = minYAxis;
     mot_r = minYAxis;
   }
+
+  //Account for lack of symmetry between motors
+  //mot_r /= 2;
+  if(mot_r < BAND_WIDTH) mot_r = DEFAULT_POWER;
+  if(mot_l < BAND_WIDTH) mot_l = DEFAULT_POWER;
 
   pubMsg.header = msg->header;
   pubMsg.left = mot_l;//((float) msg->buttons[0])/2.0;
@@ -53,7 +61,10 @@ int main(int argc, char **argv) {
   ros::Publisher pub = n.advertise<fanboat_ll::fanboatMotors>("/motors", 1000);
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
 
-  ros::Rate loop_rate(20);
+  ros::Rate loop_rate(8);
+
+  pubMsg.left = .12;
+  pubMsg.right = .12;
 
   while(ros::ok()) {
     pub.publish(pubMsg);
