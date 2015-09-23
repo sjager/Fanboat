@@ -133,6 +133,9 @@ add_executable(nurse_joy_node src/nurse_joy.cpp)
 target_link_libraries(nurse_joy_node ${catkin_LIBRARIES})
 add_dependencies(nurse_joy_node lab1_generate_messages_cpp)
 
+add_executable(forward_node src/forward.cpp)
+target_link_libraries(forward_node ${catkin_LIBRARIES})
+add_dependencies(forward_node lab1_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
