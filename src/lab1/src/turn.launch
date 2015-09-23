@@ -1,0 +1,4 @@
+<launch>
+  <node name="turn_node" pkg="lab1" type="turn_node" />
+  <param name="degree_input" value="210"/>
+</launch>
