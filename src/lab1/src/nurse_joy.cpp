@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   ros::Publisher pub = n.advertise<fanboat_ll::fanboatMotors>("/motors", 1000);
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
 
-  ros::Rate loop_rate(8);
+  ros::Rate loop_rate(13);
 
   pubMsg.left = .12;
   pubMsg.right = .12;
