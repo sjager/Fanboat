@@ -112,6 +112,9 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
 
 ## Declare a C++ library
 # add_library(lab2
@@ -125,6 +128,9 @@ catkin_package(
 
 ## Declare a C++ executable
 # add_executable(lab2_node src/lab2_node.cpp)
+add_executable(angular_position_node src/angularPositionPID.cpp)
+target_link_libraries(angular_position_node ${catkin_LIBRARIES})
+add_dependencies(angular_position_node lab2_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

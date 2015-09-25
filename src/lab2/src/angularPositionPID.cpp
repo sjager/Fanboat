@@ -13,7 +13,7 @@ float map(float x, float in_min, float in_max, float out_min, float out_max) {
 
 void inputCallback(const fanboat_ll::fanboatMotors::ConstPtr& msg) {
   ROS_INFO("I heard: a message");
-  pubMsg = msg;
+  pubMsg = *msg;
 }
 
 int main(int argc, char **argv) {
