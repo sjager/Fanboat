@@ -33,15 +33,15 @@ int main(int argc, char **argv) {
   ROS_INFO("%f", parameter);
   if(parameter <= 180.0){
     pubMsg.left = .47;
-    pubMsg.right = .12;
+    pubMsg.right = 0;
   } else {
     pubMsg.right = .47;
-    pubMsg.left = .12;
+    pubMsg.left = 0;
     parameter = (parameter - 360.0) * -1;
   }
   iterator=0;
   ROS_INFO("%f", parameter);
-  while(ros::ok() && iterator < parameter/2.0 * .13) {
+  while(ros::ok() && iterator < parameter * .13) {
     pub.publish(pubMsg);
     ros::spinOnce();
     loop_rate.sleep();

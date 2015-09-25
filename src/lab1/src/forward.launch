@@ -1,4 +1,6 @@
 <launch>
   <node name="forward_node" pkg="lab1" type="forward_node" />
-  <param name="forward_input" value=".25"/>
+  <param name="forward_input" value="2"/>
+  <param name="m" value = "2.42"/>
+  <param name="b" value = "0.2"/>
 </launch>

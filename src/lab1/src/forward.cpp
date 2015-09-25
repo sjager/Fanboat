@@ -13,8 +13,10 @@ int main(int argc, char **argv) {
 
   ros::Publisher pub = n.advertise<fanboat_ll::fanboatMotors>("/motors", 1000);
   
-  double parameter;
+  double parameter, m, b;
   n.getParam("forward_input", parameter);
+  n.getParam("m", m);
+  n.getParam("b", b);
   //ROS_INFO("Got parameter: %i", parameter);
 
   ros::Rate loop_rate(13);
@@ -33,6 +35,8 @@ int main(int argc, char **argv) {
   pubMsg.left = .48;
   pubMsg.right = .48;
   iterator=0;
+
+  parameter = (parameter - b)/m;
 
   while(ros::ok() && iterator < parameter * 13) {
     pub.publish(pubMsg);
