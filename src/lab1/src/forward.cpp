@@ -30,8 +30,8 @@ int main(int argc, char **argv) {
     iterator++;
   }
 
-  pubMsg.left = .46;
-  pubMsg.right = .46;
+  pubMsg.left = .48;
+  pubMsg.right = .48;
   iterator=0;
 
   while(ros::ok() && iterator < parameter * 13) {

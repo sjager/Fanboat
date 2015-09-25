@@ -32,10 +32,10 @@ int main(int argc, char **argv) {
 
   ROS_INFO("%f", parameter);
   if(parameter <= 180.0){
-    pubMsg.left = .85;
+    pubMsg.left = .47;
     pubMsg.right = .12;
   } else {
-    pubMsg.right = .85;
+    pubMsg.right = .47;
     pubMsg.left = .12;
     parameter = (parameter - 360.0) * -1;
   }
