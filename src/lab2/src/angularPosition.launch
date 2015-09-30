@@ -1,11 +1,11 @@
 <launch>
-  <group>
-    <remap from="/motors" to="/target_angle"/>
-    <node name="nurse_joy_node" pkg="lab1" type="nurse_joy_node" />
-  </group>
-  
   <node name="joy_node" pkg="joy" type="joy_node" />
 
+  <node name="joy_splitter_node" pkg="lab2" type="joy_splitter_node" />
+
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
+  <param name="pParam" value=".01" />
+  <param name="dParam" value=".01" />
+
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
 </launch>
