@@ -5,6 +5,7 @@ project(lab2)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+    message_generation
     roscpp
     rospy
 )
@@ -43,11 +44,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  angle.msg
+  magnitude.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -64,10 +65,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -131,6 +132,10 @@ include_directories(
 add_executable(angular_position_node src/angularPositionPID.cpp)
 target_link_libraries(angular_position_node ${catkin_LIBRARIES})
 add_dependencies(angular_position_node lab2_generate_messages_cpp)
+
+add_executable(joy_splitter_node src/joy_splitter.cpp)
+target_link_libraries(joy_splitter_node ${catkin_LIBRARIES})
+add_dependencies(joy_splitter_node lab2_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
