@@ -4,8 +4,8 @@
   <node name="joy_splitter_node" pkg="lab2" type="joy_splitter_node" />
 
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
-  <param name="pParam" value=".01" />
-  <param name="dParam" value=".01" />
+  <param name="pParam" value="0.02" />
+  <param name="dParam" value="0.05" />
 
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
 </launch>

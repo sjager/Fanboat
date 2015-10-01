@@ -7,6 +7,8 @@
 lab2::angle anglePubMsg;
 lab2::magnitude magPubMsg;
 
+float prevAngle = 0.0;
+
 const float DEAD_ZONE_MAGNITUDE = 0.12;
 
 float map(float x, float in_min, float in_max, float out_min, float out_max) {
@@ -44,8 +46,10 @@ void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
   if((fabs(y) <= DEAD_ZONE_MAGNITUDE) && (fabs(x) <= DEAD_ZONE_MAGNITUDE))
   {
     ROS_INFO("DEADZONE, y:%f, x:%f",fabs(y), fabs(x));
-    anglePubMsg.angle = 0;
+    anglePubMsg.angle = prevAngle;
     magPubMsg.magnitude = 0;
+  } else {
+    prevAngle = angle;
   }
   
 }
