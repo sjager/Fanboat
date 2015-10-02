@@ -2,6 +2,7 @@
 #include <lab2/angle.h>
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
+#include <math.h>
 
 fanboat_ll::fanboatMotors pubMsg;
 
@@ -54,13 +55,15 @@ void angleInputCallback(const lab2::angle::ConstPtr& msg) {
     float mot_l = 0.0;
 
     if(degreesToTurn > 0.0) {
-      //turn right?
+      //turn left (ccw)
       mot_r = .12;
       mot_l = pParam * degreesToTurn + dParam * (degreesToTurn - prevDegreesToTurn) / (currentTS - prevTS);
     } else {
-      //turn left?
+      //turn right (cw)
       mot_l = .12;
-      mot_r = pParam * -1.0 * degreesToTurn +  dParam * (degreesToTurn - prevDegreesToTurn) / (currentTS - prevTS);
+      degreesToTurn = -1 * degreesToTurn;
+      prevDegreesToTurn = -1 * prevDegreesToTurn;
+      mot_r = pParam * degreesToTurn +  dParam * (degreesToTurn - prevDegreesToTurn) / (currentTS - prevTS);
     }
 
     if(mot_r > 0.9) mot_r = 0.9;
