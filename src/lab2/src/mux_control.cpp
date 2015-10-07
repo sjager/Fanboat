@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
+#include <lab2/mux_control.h>
 
 #define A_INPUT 1
 #define B_INPUT 2
@@ -7,8 +8,6 @@
 #define Y_INPUT 4
 
 #define INVALID_INPUT 5
-
-// /mux_control
 
 lab2::mux_control muxControlPubMsg;
 
@@ -32,7 +31,7 @@ void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
     input = Y_INPUT;
   }
   
-  muxControlPubMsg.msg = input;
+  muxControlPubMsg.state = input;
 }
 
 int main(int argc, char **argv) {
@@ -48,11 +47,14 @@ int main(int argc, char **argv) {
   
   while(ros::ok()) {
   
-    bool validInput = (muxControlPubMsg.msg == A_INPUT) || (muxControlPubMsg.msg == B_INPUT) || (muxControlPubMsg.msg == X_INPUT);
+    bool validInput = 
+    (muxControlPubMsg.state == A_INPUT) ||
+    (muxControlPubMsg.state == B_INPUT) ||
+    (muxControlPubMsg.state == X_INPUT);
   
     if(validInput)
     {
-      muxControlPub.publish();
+      muxControlPub.publish(muxControlPubMsg);
     }
     ros::spinOnce();
     loop_rate.sleep();

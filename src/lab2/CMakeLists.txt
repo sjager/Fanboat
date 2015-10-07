@@ -142,6 +142,10 @@ add_executable(mux_node src/mux.cpp)
 target_link_libraries(mux_node ${catkin_LIBRARIES})
 add_dependencies(mux_node lab2_generate_messages_cpp)
 
+add_executable(mux_control_node src/mux_control.cpp)
+target_link_libraries(mux_control_node ${catkin_LIBRARIES})
+add_dependencies(mux_control_node lab2_generate_messages_cpp)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(lab2_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

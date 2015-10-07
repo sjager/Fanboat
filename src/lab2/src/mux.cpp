@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
       pubMsg = joyAngleMsg;
     } else {
       pubMsg.angle = 0;
-      joyAngleMsg.state = 0;
+      joyAngleMsg.angle = 0;
     }
     pub.publish(pubMsg);
     ros::spinOnce();
