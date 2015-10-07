@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <lab2/angle.h>
+#include <lab2/magnitude.h>
 #include <string.h>
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
@@ -10,22 +11,39 @@ lab2::angle joyAngleMsg;
 lab2::angle triAngleMsg;
 lab2::angle reactiveAngleMsg;
 
+lab2::magnitude joyMagnitudeMsg;
+lab2::magnitude triMagnitudeMsg;
+lab2::magnitude reactiveMagnitudeMsg;
+
 //Declare final output
-lab2::angle pubMsg;
+lab2::angle pubAngleMsg;
+lab2::magnitude pubMagnitudeMsg;
 
 // Declare mux_control input
 lab2::mux_control muxControl;
 
-void joyInputCallback(const lab2::angle::ConstPtr& msg) {
+void joyAngleCallback(const lab2::angle::ConstPtr& msg) {
   joyAngleMsg = *msg;
 }
 
-void triInputCallback(const lab2::angle::ConstPtr& msg) {
+void joyMagnitudeCallback(const lab2::magnitude::ConstPtr& msg) {
+  joyMagnitudeMsg = *msg;
+}
+
+void triAngleCallback(const lab2::angle::ConstPtr& msg) {
   triAngleMsg = *msg;
 }
 
-void reactiveInputCallback(const lab2::angle::ConstPtr& msg) {
+void triMagnitudeCallback(const lab2::magnitude::ConstPtr& msg) {
+  triMagnitudeMsg = *msg;
+}
+
+void reactiveAngleCallback(const lab2::angle::ConstPtr& msg) {
   reactiveAngleMsg = *msg;
+}
+
+void reactiveMagnitudeCallback(const lab2::magnitude::ConstPtr& msg) {
+  reactiveMagnitudeMsg = *msg;
 }
 
 void muxInputCallback(const lab2::mux_control::ConstPtr& msg) {
@@ -37,22 +55,28 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
 
-  ros::Publisher pub = n.advertise<lab2::angle>("/target_angle", 1000);
+  ros::Publisher anglepub = n.advertise<lab2::angle>("/target_angle", 1000);
+  ros::Publisher magnitudepub = n.advertise<lab2::magnitude>("/target_magnitude", 1000);
   ros::Subscriber statesub = n.subscribe("/mux_control", 1000, muxInputCallback);
-  ros::Subscriber joysub = n.subscribe("/joy_angle", 1000, joyInputCallback);
-  //ros::Subscriber imusub = n.subscribe("/fanboatLL", 1000, imuInputCallback);
+  ros::Subscriber joyanglesub = n.subscribe("/joy_angle", 1000, joyAngleCallback);
+  ros::Subscriber joymagnitudesub = n.subscribe("/joy_magnitude", 1000, joyMagnitudeCallback);
   ros::Rate loop_rate(8);
 
-  pubMsg.angle = 0;
-  
+  pubAngleMsg.angle = 0;
+  pubMagnitudeMsg.magnitude = 0;
+
   while(ros::ok()) {
     if(muxControl.state == 1) {
-      pubMsg = joyAngleMsg;
+      pubAngleMsg = joyAngleMsg;
+      pubMagnitudeMsg = pubMagnitudeMsg;
     } else {
-      pubMsg.angle = 0;
+      pubAngleMsg.angle = 0;
+      pubMagnitudeMsg.magnitude = 0;
       joyAngleMsg.angle = 0;
+      joyMagnitudeMsg.magnitude = 0;
     }
-    pub.publish(pubMsg);
+    anglepub.publish(pubAngleMsg);
+    magnitudepub.publish(pubMagnitudeMsg);
     ros::spinOnce();
     loop_rate.sleep();
   }
