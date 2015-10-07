@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
   while(ros::ok()) {
     if(muxControl.state == 1) {
       pubAngleMsg = joyAngleMsg;
-      pubMagnitudeMsg = pubMagnitudeMsg;
+      pubMagnitudeMsg = joyMagnitudeMsg;
     } else {
       pubAngleMsg.angle = 0;
       pubMagnitudeMsg.magnitude = 0;
