@@ -60,8 +60,8 @@ int main(int argc, char **argv) {
   ros::NodeHandle n;
   
   
-  ros::Publisher anglePub = n.advertise<lab2::angle>("/target_angle", 1000);
-  ros::Publisher magnitudePub = n.advertise<lab2::magnitude>("/target_magnitude", 1000);
+  ros::Publisher anglePub = n.advertise<lab2::angle>("/joy_angle", 1000);
+  ros::Publisher magnitudePub = n.advertise<lab2::magnitude>("/joy_magnitude", 1000);
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
 
   ros::Rate loop_rate(13);

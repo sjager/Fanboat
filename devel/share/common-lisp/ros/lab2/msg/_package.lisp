@@ -5,5 +5,7 @@
    "ANGLE"
    "<MAGNITUDE>"
    "MAGNITUDE"
+   "<MUX_CONTROL>"
+   "MUX_CONTROL"
   ))
 

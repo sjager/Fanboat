@@ -48,6 +48,7 @@ add_message_files(
   FILES
   angle.msg
   magnitude.msg
+  mux_control.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -136,6 +137,10 @@ add_dependencies(angular_position_node lab2_generate_messages_cpp)
 add_executable(joy_splitter_node src/joy_splitter.cpp)
 target_link_libraries(joy_splitter_node ${catkin_LIBRARIES})
 add_dependencies(joy_splitter_node lab2_generate_messages_cpp)
+
+add_executable(mux_node src/mux.cpp)
+target_link_libraries(mux_node ${catkin_LIBRARIES})
+add_dependencies(mux_node lab2_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

@@ -9,4 +9,6 @@
     (:file "_package_angle" :depends-on ("_package"))
     (:file "magnitude" :depends-on ("_package_magnitude"))
     (:file "_package_magnitude" :depends-on ("_package"))
+    (:file "mux_control" :depends-on ("_package_mux_control"))
+    (:file "_package_mux_control" :depends-on ("_package"))
   ))
