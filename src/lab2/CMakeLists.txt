@@ -150,6 +150,9 @@ add_executable(triangle_node src/triangle.cpp)
 target_link_libraries(triangle_node ${catkin_LIBRARIES})
 add_dependencies(triangle_node lab2_generate_messages_cpp)
 
+add_executable(mixer_node src/mixer.cpp)
+target_link_libraries(mixer_node ${catkin_LIBRARIES})
+add_dependencies(mixer_node lab2_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

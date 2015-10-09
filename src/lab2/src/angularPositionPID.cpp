@@ -80,10 +80,11 @@ void angleInputCallback(const lab2::angle::ConstPtr& msg) {
 
     ROS_INFO("Left Motor Unconstrained: %f", mot_l);
 
-    if(mot_r > 0.9) mot_r = 0.9;
-    if(mot_l > 0.9) mot_l = 0.9;
-    if(mot_r < 0.12) mot_r = 0.12;
-    if(mot_l < 0.12) mot_l = 0.12;
+    /// This is now being done in the mixer node.
+    //if(mot_r > 0.9) mot_r = 0.9;
+    //if(mot_l > 0.9) mot_l = 0.9;
+    //if(mot_r < 0.12) mot_r = 0.12;
+    //if(mot_l < 0.12) mot_l = 0.12;
 
     ROS_INFO("Right Motor: %5f Left Motor: %5f",mot_r, mot_l);
     ROS_INFO("Degdiff:%f, tsdiff: %f", degreesToTurn - prevDegreesToTurn, (float) (currentTS - prevTS));
@@ -98,7 +99,7 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
 
-  ros::Publisher pub = n.advertise<fanboat_ll::fanboatMotors>("/motors", 1000);
+  ros::Publisher pub = n.advertise<fanboat_ll::fanboatMotors>("/angle_motors", 1000);
   ros::Subscriber anglesub = n.subscribe("/target_angle", 1000, angleInputCallback);
   ros::Subscriber imusub = n.subscribe("/fanboatLL", 1000, imuInputCallback);
   ros::Rate loop_rate(8);
