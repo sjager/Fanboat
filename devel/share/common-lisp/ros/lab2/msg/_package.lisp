@@ -7,5 +7,7 @@
    "MAGNITUDE"
    "<MUX_CONTROL>"
    "MUX_CONTROL"
+   "<RANGE>"
+   "RANGE"
   ))
 
