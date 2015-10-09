@@ -63,8 +63,8 @@ int main(int argc, char **argv) {
   ros::Subscriber joyanglesub = n.subscribe("/joy_angle", 1000, joyAngleCallback);
   ros::Subscriber joymagnitudesub = n.subscribe("/joy_magnitude", 1000, joyMagnitudeCallback);
   
-  ros::Subscriber trianglesub = n.subscribe("/joy_angle", 1000, triAngleCallback);
-  ros::Subscriber timagnitudesub = n.subscribe("/joy_magnitude", 1000, triMagnitudeCallback);
+  ros::Subscriber trianglesub = n.subscribe("/tri_angle", 1000, triAngleCallback);
+  ros::Subscriber trimagnitudesub = n.subscribe("/tri_magnitude", 1000, triMagnitudeCallback);
   
   ros::Rate loop_rate(8);
 
@@ -75,11 +75,12 @@ int main(int argc, char **argv) {
     if(muxControl.state == 1) {
       pubAngleMsg = joyAngleMsg;
       pubMagnitudeMsg = joyMagnitudeMsg;
+    } else if (muxControl.state == 2) {
+      pubAngleMsg = triAngleMsg;
+      pubMagnitudeMsg = triMagnitudeMsg;
     } else {
       pubAngleMsg.angle = 0;
       pubMagnitudeMsg.magnitude = 0;
-      joyAngleMsg.angle = 0;
-      joyMagnitudeMsg.magnitude = 0;
     }
     anglepub.publish(pubAngleMsg);
     magnitudepub.publish(pubMagnitudeMsg);
