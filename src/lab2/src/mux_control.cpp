@@ -7,7 +7,7 @@
 #define X_INPUT 3
 #define Y_INPUT 4
 
-#define INVALID_INPUT 5
+#define INVALID_INPUT 0
 
 lab2::mux_control muxControlPubMsg;
 
@@ -44,6 +44,11 @@ int main(int argc, char **argv) {
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
   
   ros::Rate loop_rate(13);
+  
+  // this serves as a default message. The node will not publish
+  // again until A,B,X, or Y is pressed.
+  muxControlPubMsg.state = INVALID_INPUT; 
+  muxControlPub.publish(muxControlPubMsg);
   
   while(ros::ok()) {
   

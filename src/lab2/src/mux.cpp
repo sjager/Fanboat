@@ -57,9 +57,15 @@ int main(int argc, char **argv) {
 
   ros::Publisher anglepub = n.advertise<lab2::angle>("/target_angle", 1000);
   ros::Publisher magnitudepub = n.advertise<lab2::magnitude>("/target_magnitude", 1000);
+  
   ros::Subscriber statesub = n.subscribe("/mux_control", 1000, muxInputCallback);
+  
   ros::Subscriber joyanglesub = n.subscribe("/joy_angle", 1000, joyAngleCallback);
   ros::Subscriber joymagnitudesub = n.subscribe("/joy_magnitude", 1000, joyMagnitudeCallback);
+  
+  ros::Subscriber trianglesub = n.subscribe("/joy_angle", 1000, triAngleCallback);
+  ros::Subscriber timagnitudesub = n.subscribe("/joy_magnitude", 1000, triMagnitudeCallback);
+  
   ros::Rate loop_rate(8);
 
   pubAngleMsg.angle = 0;
