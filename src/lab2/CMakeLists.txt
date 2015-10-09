@@ -49,6 +49,7 @@ add_message_files(
   angle.msg
   magnitude.msg
   mux_control.msg
+  range.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -153,6 +154,10 @@ add_dependencies(triangle_node lab2_generate_messages_cpp)
 add_executable(mixer_node src/mixer.cpp)
 target_link_libraries(mixer_node ${catkin_LIBRARIES})
 add_dependencies(mixer_node lab2_generate_messages_cpp)
+
+add_executable(ir_range_node src/irRange.cpp)
+target_link_libraries(ir_range_node ${catkin_LIBRARIES})
+add_dependencies(ir_range_node lab2_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
