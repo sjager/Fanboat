@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <fanboat_ll/fanboatLL.h>
+#include <lab2/range.h>
 #include <math.h>
 
 fanboat_ll::fanboatLL fanboatMsg;
@@ -15,8 +16,8 @@ float calc_range(float volt)
 void inputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) 
 {
 
-    float volt_A = msg.a2;
-    float volt_B = msg.a3;
+    float volt_A = msg->a2;
+    float volt_B = msg->a3;
 
     float range_A = calc_range(volt_A);
     float range_B = calc_range(volt_B);
@@ -38,7 +39,7 @@ int main(int argc, char **argv)
 
     ros::Rate loop_rate(8);
 
-    while(ros::ok))
+    while(ros::ok())
     {
         pub.publish(rangeMsg);
         ros::spinOnce();
