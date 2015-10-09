@@ -3,6 +3,8 @@
   (:export
    "<ANGLE>"
    "ANGLE"
+   "<RANGE>"
+   "RANGE"
    "<MAGNITUDE>"
    "MAGNITUDE"
    "<MUX_CONTROL>"

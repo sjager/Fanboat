@@ -40,17 +40,17 @@ int main(int argc, char **argv) {
   float mot_l;
 
   while(ros::ok()) {
-    if(magMsg.magnitude >= .12)
-    {
-      mot_r = angleMsg.right + magMsg.magnitude;//map(angleMsg.right, 0.12, 0.95, 0.12, magMsg.magnitude);
-      mot_l = angleMsg.left + magMsg.magnitude;//map(angleMsg.left, 0.12, 0.95, 0.12, magMsg.magnitude);
+    //if(magMsg.magnitude >= .12)
+    //{
+      mot_r = angleMsg.right;// + magMsg.magnitude;//map(angleMsg.right, 0.12, 0.95, 0.12, magMsg.magnitude);
+      mot_l = angleMsg.left;// + magMsg.magnitude;//map(angleMsg.left, 0.12, 0.95, 0.12, magMsg.magnitude);
       if(mot_r < .12) mot_r = .12;
       if(mot_l < .12) mot_l = .12;
       if(mot_r > .95) mot_r = .95;
       if(mot_l > .95) mot_l = .95;
       pubMsg.right = mot_r;
       pubMsg.left = mot_l;
-    }
+    //}
     pub.publish(pubMsg);
     ros::spinOnce();
     loop_rate.sleep();

@@ -17,20 +17,22 @@ float angleVal = 0.0;
 
 void timerCallback(const ros::TimerEvent& event)
 {
-  if(switcher <= 5) {
+  if(switcher >= 5) {
  
     pubMagnitudeMsg.magnitude = FWD_MAGNITUDE;
     ROS_INFO("forward");
     
-    switcher++; 
+    switcher = 0; 
   } else {
-    angleVal += 120;
+    if(switcher == 1){
+      angleVal += 120;
+    }
     angleVal = fmod(angleVal,360.0);
     pubAngleMsg.angle = angleVal;
     pubMagnitudeMsg.magnitude = 0.0;
     ROS_INFO("turn: %f", pubAngleMsg.angle);
    
-    switcher = 0;
+    switcher++;
   }
 }
 
@@ -39,7 +41,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "triangle_node");
   ros::NodeHandle n;
   
-  ros::Timer timer = n.createTimer(ros::Duration(5), timerCallback);
+  ros::Timer timer = n.createTimer(ros::Duration(1), timerCallback);
 
   //These publishers individually publish angle and magnitude info
   ros::Publisher anglePub = n.advertise<lab2::angle>("/tri_angle", 1000);  
