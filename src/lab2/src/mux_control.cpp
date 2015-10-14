@@ -31,7 +31,10 @@ void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
     input = Y_INPUT;
   }
   
-  muxControlPubMsg.state = input;
+  
+  if(aDown || bDown || xDown || yDown) {
+    muxControlPubMsg.state = input;
+  }
 }
 
 int main(int argc, char **argv) {
@@ -45,8 +48,6 @@ int main(int argc, char **argv) {
   
   ros::Rate loop_rate(13);
   
-  // this serves as a default message. The node will not publish
-  // again until A,B,X, or Y is pressed.
   muxControlPubMsg.state = INVALID_INPUT; 
   muxControlPub.publish(muxControlPubMsg);
   

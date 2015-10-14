@@ -36,37 +36,48 @@ int main(int argc, char **argv) {
   pubMsg.right = .12;
   pubMsg.left = .12;
 
-  
-
-  float mot_r;
-  float mot_l;
-
   while(ros::ok()) {
     float right = angleMsg.right;
     float left = angleMsg.left;
     
+    //ROS_INFO("RA: %f, LA: %f", right, left);
+
     float biggerVal = left;
     
-    if(right <= left) {
+    if(right >= left) {
       biggerVal = right;
     }
     
     float range = FAN_MAX - biggerVal;
     
+    //ROS_INFO("Range: %f", range);
+
     float constant = range * magMsg.magnitude;
     
-    mot_r += constant;
-    mot_l += constant;
+    right += constant;
+    left += constant;
     
+    //ROS_INFO("Const: %f", constant);
+
     //these checks aren't technically needed, but just in case.
-    if(mot_r > FAN_MAX) {
-      mot_r = FAN_MAX;
+    if(right > FAN_MAX) {
+      right = FAN_MAX;
     }
     
-    if(mot_l > FAN_MAX) {
-      mot_l = FAN_MAX;
+    if(left > FAN_MAX) {
+      left = FAN_MAX;
     }
     
+    if(right < .12) right = .12;
+    if(left < .12) left = .12;
+
+
+    //ROS_INFO("RS: %f, LS: %f", right, left);
+    ROS_INFO("RA: %f, LA: %f, RN: %f, C: %f, RS: %f LS: %f", angleMsg.right, angleMsg.left, range, constant, right, left);    
+
+
+    pubMsg.right = right;
+    pubMsg.left = left;
 
     pub.publish(pubMsg);
     ros::spinOnce();
