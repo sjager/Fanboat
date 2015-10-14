@@ -7,6 +7,10 @@
   <node name="mux_node" pkg="lab2" type="mux_node" />
   <node name="mux_control_node" pkg="lab2" type="mux_control_node" />
 
+  <node name="reactive_control_node" pkg="lab2" type="reactive_control_node" />
+  <param name="target_dist" value="0.4" />
+  <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
+
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
   <param name="pParam" value="0.01" />
   <param name="dParam" value="0.007" />

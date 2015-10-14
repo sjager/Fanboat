@@ -52,15 +52,8 @@ int main(int argc, char **argv) {
   
   while(ros::ok()) {
   
-    bool validInput = 
-    (muxControlPubMsg.state == A_INPUT) ||
-    (muxControlPubMsg.state == B_INPUT) ||
-    (muxControlPubMsg.state == X_INPUT);
-  
-    if(validInput)
-    {
-      muxControlPub.publish(muxControlPubMsg);
-    }
+    muxControlPub.publish(muxControlPubMsg);
+    
     ros::spinOnce();
     loop_rate.sleep();
   }

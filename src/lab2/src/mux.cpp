@@ -65,6 +65,9 @@ int main(int argc, char **argv) {
   
   ros::Subscriber trianglesub = n.subscribe("/tri_angle", 1000, triAngleCallback);
   ros::Subscriber trimagnitudesub = n.subscribe("/tri_magnitude", 1000, triMagnitudeCallback);
+
+  ros::Subscriber reactAngleSub = n.subscribe("/reactive_angle", 1000, reactiveAngleCallback);
+  ros::Subscriber reactMagSub = n.subscribe("/reactive_magnitude", 1000, reactiveMagnitudeCallback);
   
   ros::Rate loop_rate(8);
 
@@ -78,6 +81,9 @@ int main(int argc, char **argv) {
     } else if (muxControl.state == 2) {
       pubAngleMsg = triAngleMsg;
       pubMagnitudeMsg = triMagnitudeMsg;
+    } else if (muxControl.state == 3) {
+      pubAngleMsg = reactiveAngleMsg;
+      pubMagnitudeMsg = reactiveMagnitudeMsg;
     } else {
       pubAngleMsg.angle = 0;
       pubMagnitudeMsg.magnitude = 0;

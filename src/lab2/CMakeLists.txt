@@ -159,6 +159,10 @@ add_executable(ir_range_node src/irRange.cpp)
 target_link_libraries(ir_range_node ${catkin_LIBRARIES})
 add_dependencies(ir_range_node lab2_generate_messages_cpp)
 
+add_executable(reactive_control_node src/reactive_control.cpp)
+target_link_libraries(reactive_control_node ${catkin_LIBRARIES})
+add_dependencies(reactive_control_node lab2_generate_messages_cpp)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(lab2_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
