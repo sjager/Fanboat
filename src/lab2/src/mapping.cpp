@@ -17,6 +17,22 @@ float rangeA;
 float rangeB;
 int flag = 0;
 
+int ang;
+float dist;
+float exDist = 0.0;
+if(mapping_type == 0.0){exDist = 100.0;}
+int exAng = 0;
+float startAngle;
+
+void controllerCallback(const sensor_msgs::Joy::ConstPtr& msg) {
+  
+  int input = INVALID_INPUT;
+  
+  int yDown = msg->buttons[3];
+  
+  if(yDown == 1) {startAngle = IMUMsg.yaw;}
+
+}
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
     ROS_INFO("IMU.yaw (callback):%f", msg->yaw);  
@@ -31,45 +47,6 @@ void inputCallback(const lab2::range::ConstPtr& msg)
 	rangeB = rangeMsg.b;
 }
 
-void spin() {
-//set up the variables needed
-	int ang;
-	float dist;
-	float exDist = 0.0;
-	if(mapping_type == 0.0){exDist = 100.0;}
-	int exAng = 0;
-	float startAngle = IMUMsg.yaw;
-    
-	//loop through the whole circle
-	//for(int i = 0; i < 360; i += 10) { //If use for, update next line too
-	//while(1) { //fabs(startAngle) - fabs(IMUMsg.yaw) > 10) {
-		//tell the boat to move a bit further than it currently is
-		//does angleMsg need a header?
-        ROS_INFO("IMUsg.yaw= %f", IMUMsg.yaw);
-  		angleMsg.angle = IMUMsg.yaw + 90; //for statement had i, not 45
-		ROS_INFO("I'm trying to get to the angle: %f\n", angleMsg.angle);
-		//get the current angle and distance
-		ang = IMUMsg.yaw - 360.0;
-		//record the new shortest/longest distance
-		if(mapping_type == 0) {
-			dist = std::min(rangeA, rangeB);
-			if(dist < exDist) {
-				exDist = dist;
-				exAng = ang;
-			}
-		} else {
-			dist = std::max(rangeA, rangeB);
-			if(dist > exDist) {
-				exDist = dist;
-				exAng = ang;
-			}
-		}
-	//}
-
-	angleMsg.angle = exAng;
-	return;
-}
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "mapping_node");
@@ -80,15 +57,40 @@ int main(int argc, char **argv)
     ros::Publisher ang_pub = n.advertise<lab2::angle>("/mapping_angle", 1000);
     ros::Subscriber sub = n.subscribe("/ir_range", 1000, inputCallback);
 	ros::Subscriber fanboat = n.subscribe("/fanboatLL", 1000, IMUinputCallback);
+	ros::Subscriber sub = n.subscribe("/joy", 1000, controllerCallback);
 	
     n.getParam("mapping_type", mapping_type);
     
     ROS_INFO("flag = %i", flag);
-	while(flag == 0){
+	
+	if(IMUMsg.yaw - startAngle 
+
+	if(flag == 0){
         ROS_INFO("about to spin");
-		spin();
-		flag = 1;
+		ROS_INFO("IMUsg.yaw= %f", IMUMsg.yaw);
+  		angleMsg.angle = IMUMsg.yaw + 90; //for statement had i, not 45
+		ROS_INFO("I'm trying to get to the angle: %f\n", angleMsg.angle);
+		//get the current angle and distance
+		ang = IMUMsg.yaw - 360.0;
+		//record the new shortest/longest distance
+		if(mapping_type == 0) {
+			dist = std::min(rangeA, rangeB);
+			if(dist < exDist) {
+				ROS_INFO("New nearest found: %f, %f", dist, ang);
+				exDist = dist;
+				exAng = ang;
+			}
+		} else {
+			dist = std::max(rangeA, rangeB);
+			if(dist > exDist) {
+				ROS_INFO("New furthest found: %f, %f", dist, ang);
+				exDist = dist;
+				exAng = ang;
+			}
+		}
 	}
+
+	if(flag == 1){angleMsg.angle = exAng;}
 
     ros::Rate loop_rate(8);
 
