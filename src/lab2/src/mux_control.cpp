@@ -31,7 +31,10 @@ void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
     input = Y_INPUT;
   }
   
-  muxControlPubMsg.state = input;
+  
+  if(aDown || bDown || xDown || yDown) {
+    muxControlPubMsg.state = input;
+  }
 }
 
 int main(int argc, char **argv) {
