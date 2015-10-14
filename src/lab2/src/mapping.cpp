@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     
     ROS_INFO("flag = %i", flag);
 	
-	if(IMUMsg.yaw - startAngle 
+	if(IMUMsg.yaw - startAngle == 180) {flag = 1;}
 
 	if(flag == 0){
         ROS_INFO("about to spin");
