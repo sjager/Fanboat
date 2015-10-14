@@ -3,6 +3,7 @@
 #include <lab2/angle.h>
 #include <lab2/magnitude.h>
 #include <math.h>
+#include <algorithm>
 
 lab2::angle anglePubMsg;
 lab2::magnitude magPubMsg;
