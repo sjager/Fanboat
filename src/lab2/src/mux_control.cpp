@@ -45,22 +45,18 @@ int main(int argc, char **argv) {
   
   ros::Rate loop_rate(13);
   
-  // this serves as a default message. The node will not publish
-  // again until A,B,X, or Y is pressed.
   muxControlPubMsg.state = INVALID_INPUT; 
   muxControlPub.publish(muxControlPubMsg);
   
   while(ros::ok()) {
   
-    bool validInput = 
-    (muxControlPubMsg.state == A_INPUT) ||
-    (muxControlPubMsg.state == B_INPUT) ||
-    (muxControlPubMsg.state == X_INPUT);
+    //bool validInput = 
+    //(muxControlPubMsg.state == A_INPUT) ||
+    //(muxControlPubMsg.state == B_INPUT) ||
+    //(muxControlPubMsg.state == X_INPUT);
   
-    if(validInput)
-    {
-      muxControlPub.publish(muxControlPubMsg);
-    }
+    muxControlPub.publish(muxControlPubMsg);
+    
     ros::spinOnce();
     loop_rate.sleep();
   }
