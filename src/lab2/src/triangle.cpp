@@ -6,7 +6,7 @@
 #include <math.h>
 
 #define WAIT_TIME 5
-#define FWD_MAGNITUDE 1
+#define FWD_MAGNITUDE .7
 
 // Messages to be published by this node
 lab2::angle pubAngleMsg;
@@ -17,12 +17,12 @@ float angleVal = 0.0;
 
 void timerCallback(const ros::TimerEvent& event)
 {
-  if(switcher >= 3) {
+  if(switcher >= 7) {
     pubMagnitudeMsg.magnitude = FWD_MAGNITUDE;
 
     ROS_INFO("forward, switcher: %i", switcher);
     
-    switcher = 1; 
+    switcher = 1;
   } else {
     if(switcher == 1){
       angleVal += 120;

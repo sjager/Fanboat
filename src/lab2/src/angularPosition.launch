@@ -2,7 +2,7 @@
   <node name="joy_node" pkg="joy" type="joy_node" />
   <node name="joy_splitter_node" pkg="lab2" type="joy_splitter_node" />
 
-  <node name="triangle_node" pkg="lab2" type="triangle_node" />
+  <node name="triangle_node" pkg="lab2" type="triangle_node" output="screen" />
 
   <node name="mux_node" pkg="lab2" type="mux_node" />
   <node name="mux_control_node" pkg="lab2" type="mux_control_node" />
