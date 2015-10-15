@@ -43,7 +43,7 @@ void spin() {
 	while(fabs(startAngle) - fabs(IMUMsg.yaw) > 10) {
 		//tell the boat to move a bit further than it currently is
 		//does angleMsg need a header?
-  		angleMsg.angle = IMUMsg.yaw + 45; //for statement had i, not 45
+  		angleMsg.angle = IMUMsg.yaw + 90; //for statement had i, not 45
 		ROS_INFO("I'm trying to get to the angle: %f\n", angleMsg.angle);
 		//get the current angle and distance
 		ang = IMUMsg.yaw - 360.0;

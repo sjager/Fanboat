@@ -5,7 +5,7 @@
   <node name="triangle_node" pkg="lab2" type="triangle_node" />
 
   <node name="mux_node" pkg="lab2" type="mux_node" />
-  <node name="mux_control_node" pkg="lab2" type="mux_control_node" />
+  <node name="mux_control_node" pkg="lab2" type="mux_control_node" output="screen"/>
 
   <node name="reactive_control_node" pkg="lab2" type="reactive_control_node" />
   <param name="target_dist" value="0.4" />
@@ -17,6 +17,8 @@
   <param name="iParam" value="0.0005" />
 
   <node name="mixer_node" pkg="lab2" type="mixer_node" />
+
+  <node name="mapping_node" pkg="lab2" type="mapping_node" output="screen"/>
 
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
 </launch>
