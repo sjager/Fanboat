@@ -10,10 +10,12 @@
 lab2::angle joyAngleMsg;
 lab2::angle triAngleMsg;
 lab2::angle reactiveAngleMsg;
+lab2::angle mappingAngleMsg;
 
 lab2::magnitude joyMagnitudeMsg;
 lab2::magnitude triMagnitudeMsg;
 lab2::magnitude reactiveMagnitudeMsg;
+lab2::magnitude mappingMagnitudeMsg;
 
 //Declare final output
 lab2::angle pubAngleMsg;
@@ -46,6 +48,14 @@ void reactiveMagnitudeCallback(const lab2::magnitude::ConstPtr& msg) {
   reactiveMagnitudeMsg = *msg;
 }
 
+void mappingAngleCallback(const lab2::angle::ConstPtr& msg) {
+  mappingAngleMsg = *msg;
+}
+
+void mappingMagnitudeCallback(const lab2::magnitude::ConstPtr& msg) {
+  mappingMagnitudeMsg = *msg;
+}
+
 void muxInputCallback(const lab2::mux_control::ConstPtr& msg) {
   muxControl = *msg;
 }
@@ -68,6 +78,9 @@ int main(int argc, char **argv) {
 
   ros::Subscriber reactAngleSub = n.subscribe("/reactive_angle", 1000, reactiveAngleCallback);
   ros::Subscriber reactMagSub = n.subscribe("/reactive_magnitude", 1000, reactiveMagnitudeCallback);
+
+  ros::Subscriber mappingAngleSub = n.subscribe("/mapping_angle", 1000, mappingAngleCallback);
+  ros::Subscriber mappingMagSub = n.subscribe("/mapping_magnitude", 1000, mappingMagnitudeCallback);
   
   ros::Rate loop_rate(8);
 
@@ -76,15 +89,22 @@ int main(int argc, char **argv) {
 
   while(ros::ok()) {
     if(muxControl.state == 1) {
+        ROS_INFO("MODE: JOYSTICK");
       pubAngleMsg = joyAngleMsg;
       pubMagnitudeMsg = joyMagnitudeMsg;
     } else if (muxControl.state == 2) {
+        ROS_INFO("MODE: TRIANGLE");
       pubAngleMsg = triAngleMsg;
       pubMagnitudeMsg = triMagnitudeMsg;
     } else if (muxControl.state == 3) {
+        ROS_INFO("MODE: REACTIVE");
       pubAngleMsg = reactiveAngleMsg;
       pubMagnitudeMsg = reactiveMagnitudeMsg;
-    } else {
+	} else if (muxControl.state == 4) {
+        ROS_INFO("MODE: MAPPING");
+		pubAngleMsg = mappingAngleMsg;
+		pubMagnitudeMsg = mappingMagnitudeMsg;    
+	} else {
       pubAngleMsg.angle = 0;
       pubMagnitudeMsg.magnitude = 0;
     }
