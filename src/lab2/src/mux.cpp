@@ -89,15 +89,19 @@ int main(int argc, char **argv) {
 
   while(ros::ok()) {
     if(muxControl.state == 1) {
+        ROS_INFO("MODE: JOYSTICK");
       pubAngleMsg = joyAngleMsg;
       pubMagnitudeMsg = joyMagnitudeMsg;
     } else if (muxControl.state == 2) {
+        ROS_INFO("MODE: TRIANGLE");
       pubAngleMsg = triAngleMsg;
       pubMagnitudeMsg = triMagnitudeMsg;
     } else if (muxControl.state == 3) {
+        ROS_INFO("MODE: REACTIVE");
       pubAngleMsg = reactiveAngleMsg;
       pubMagnitudeMsg = reactiveMagnitudeMsg;
 	} else if (muxControl.state == 4) {
+        ROS_INFO("MODE: MAPPING");
 		pubAngleMsg = mappingAngleMsg;
 		pubMagnitudeMsg = mappingMagnitudeMsg;    
 	} else {

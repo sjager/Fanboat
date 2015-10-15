@@ -12,7 +12,6 @@
 lab2::mux_control muxControlPubMsg;
 
 void inputCallback(const sensor_msgs::Joy::ConstPtr& msg) {
-  ROS_INFO("Got input");
   
   int input = INVALID_INPUT;
   
