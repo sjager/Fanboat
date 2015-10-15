@@ -40,6 +40,10 @@ int main(int argc, char **argv) {
     float right = angleMsg.right;
     float left = angleMsg.left;
     
+    //right = .9;
+    //left = .1;
+
+
     //ROS_INFO("RA: %f, LA: %f", right, left);
 
     float biggerVal = left;
@@ -52,7 +56,12 @@ int main(int argc, char **argv) {
     
     //ROS_INFO("Range: %f", range);
 
-    float constant = range * magMsg.magnitude;
+
+    float magn = magMsg.magnitude;
+
+    //magn = .5;
+
+    float constant = range * magn;
     
     right += constant;
     left += constant;

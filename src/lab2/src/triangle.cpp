@@ -6,23 +6,23 @@
 #include <math.h>
 
 #define WAIT_TIME 5
-#define FWD_MAGNITUDE .5
+#define FWD_MAGNITUDE 1
 
 // Messages to be published by this node
 lab2::angle pubAngleMsg;
 lab2::magnitude pubMagnitudeMsg;
 
-int switcher = 0;
+int switcher = 1;
 float angleVal = 0.0;
 
 void timerCallback(const ros::TimerEvent& event)
 {
-  if(switcher >= 5) {
- 
+  if(switcher >= 3) {
     pubMagnitudeMsg.magnitude = FWD_MAGNITUDE;
-    ROS_INFO("forward");
+
+    ROS_INFO("forward, switcher: %i", switcher);
     
-    switcher = 0; 
+    switcher = 1; 
   } else {
     if(switcher == 1){
       angleVal += 120;
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "triangle_node");
   ros::NodeHandle n;
   
-  ros::Timer timer = n.createTimer(ros::Duration(1), timerCallback);
+  ros::Timer timer = n.createTimer(ros::Duration(2), timerCallback);
 
   //These publishers individually publish angle and magnitude info
   ros::Publisher anglePub = n.advertise<lab2::angle>("/tri_angle", 1000);  
