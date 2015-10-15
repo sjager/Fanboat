@@ -11,15 +11,16 @@
   <param name="target_dist" value="0.4" />
   <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
 
-  <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
-  <param name="pParam" value="0.01" />
-  <param name="dParam" value="0.007" />
-  <param name="iParam" value="0.0005" />
+  <node name="angular_position_node" pkg="lab2" type="angular_position_node" output="screen"/>
+  
+  <param name="pParam" value="0.017" />
+  <param name="dParam" value="0.02" />
+  <param name="iParam" value="0.0000" />
 
   <node name="mixer_node" pkg="lab2" type="mixer_node" />
 
-  <node name="mapping_node" pkg="lab2" type="mapping_node" output="screen"/>
-  <param name="mapping_type" value="0" />
+  <node name="mapping_node" pkg="lab2" type="mapping_node" />
+  <param name="mapping_type" value="1" />
 
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
 </launch>
