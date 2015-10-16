@@ -53,7 +53,7 @@ void inputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg)
     UpdateArray(range_B);
     ROS_INFO("Average: %f\n", runningAverage);
     
-    rangeMsg.header = fanboatMsg.header;
+    rangeMsg.header = msg->header;
 
     rangeMsg.a = range_A;
     rangeMsg.b = range_B;
