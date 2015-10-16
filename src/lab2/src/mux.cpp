@@ -5,6 +5,7 @@
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
 #include <lab2/mux_control.h>
+#include <lab2/toggle.h>
 
 // Declare messages for each input
 lab2::angle joyAngleMsg;
@@ -16,6 +17,8 @@ lab2::magnitude joyMagnitudeMsg;
 lab2::magnitude triMagnitudeMsg;
 lab2::magnitude reactiveMagnitudeMsg;
 lab2::magnitude mappingMagnitudeMsg;
+
+lab2::toggle mappingToggleMsg;
 
 //Declare final output
 lab2::angle pubAngleMsg;
@@ -60,6 +63,10 @@ void muxInputCallback(const lab2::mux_control::ConstPtr& msg) {
   muxControl = *msg;
 }
 
+void mappingToggleCallback(const lab2::toggle::ConstPtr& msg) {
+  mappingToggleMsg = *msg;
+}
+
 int main(int argc, char **argv) {
   ros::init(argc, argv, "mux_node");
 
@@ -82,6 +89,11 @@ int main(int argc, char **argv) {
   ros::Subscriber mappingAngleSub = n.subscribe("/mapping_angle", 1000, mappingAngleCallback);
   ros::Subscriber mappingMagSub = n.subscribe("/mapping_magnitude", 1000, mappingMagnitudeCallback);
   
+  ros::Subscriber mappingToggleSub = n.subscribe("/mapping_toggle_control", 1000, mappingToggleCallback);
+
+  bool toggleEnabled = false;
+  toggleEnabled = n.param("MappingToggle", toggleEnabled);
+
   ros::Rate loop_rate(8);
 
   pubAngleMsg.angle = 0;
@@ -89,21 +101,21 @@ int main(int argc, char **argv) {
 
   while(ros::ok()) {
     if(muxControl.state == 1) {
-        ROS_INFO("MODE: JOYSTICK");
+      ROS_INFO("MODE: JOYSTICK");
       pubAngleMsg = joyAngleMsg;
       pubMagnitudeMsg = joyMagnitudeMsg;
     } else if (muxControl.state == 2) {
-        ROS_INFO("MODE: TRIANGLE");
+      ROS_INFO("MODE: TRIANGLE");
       pubAngleMsg = triAngleMsg;
       pubMagnitudeMsg = triMagnitudeMsg;
-    } else if (muxControl.state == 3) {
-        ROS_INFO("MODE: REACTIVE");
+    } else if (muxControl.state == 3 || mappingToggleMsg.toggle || toggleEnabled) {
+      ROS_INFO("MODE: REACTIVE");
       pubAngleMsg = reactiveAngleMsg;
       pubMagnitudeMsg = reactiveMagnitudeMsg;
 	} else if (muxControl.state == 4) {
-        ROS_INFO("MODE: MAPPING");
-		pubAngleMsg = mappingAngleMsg;
-		pubMagnitudeMsg = mappingMagnitudeMsg;    
+      ROS_INFO("MODE: MAPPING");
+	  pubAngleMsg = mappingAngleMsg;
+	  pubMagnitudeMsg = mappingMagnitudeMsg;    
 	} else {
       pubAngleMsg.angle = 0;
       pubMagnitudeMsg.magnitude = 0;

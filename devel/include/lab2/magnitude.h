@@ -26,11 +26,13 @@ struct magnitude_
 
   magnitude_()
     : header()
-    , magnitude(0.0)  {
+    , magnitude(0.0)
+    , ignoreAngle(false)  {
     }
   magnitude_(const ContainerAllocator& _alloc)
     : header(_alloc)
-    , magnitude(0.0)  {
+    , magnitude(0.0)
+    , ignoreAngle(false)  {
     }
 
 
@@ -40,6 +42,9 @@ struct magnitude_
 
    typedef double _magnitude_type;
   _magnitude_type magnitude;
+
+   typedef uint8_t _ignoreAngle_type;
+  _ignoreAngle_type ignoreAngle;
 
 
 
@@ -75,7 +80,7 @@ namespace message_traits
 
 
 // BOOLTRAITS {'IsFixedSize': False, 'IsMessage': True, 'HasHeader': True}
-// {'lab2': ['/home/sjager2/Github/Fanboat/src/lab2/msg'], 'std_msgs': ['/opt/ros/indigo/share/std_msgs/cmake/../msg']}
+// {'lab2': ['/home/kaitlyn/Desktop/Git_Repos/Fanboat/src/lab2/msg'], 'std_msgs': ['/opt/ros/indigo/share/std_msgs/cmake/../msg']}
 
 // !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
@@ -118,12 +123,12 @@ struct MD5Sum< ::lab2::magnitude_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "5abe66de36ab14d7d6aa08d9f6bfc02c";
+    return "a7bd81ea64281cc8cf9890fe81e13e44";
   }
 
   static const char* value(const ::lab2::magnitude_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x5abe66de36ab14d7ULL;
-  static const uint64_t static_value2 = 0xd6aa08d9f6bfc02cULL;
+  static const uint64_t static_value1 = 0xa7bd81ea64281cc8ULL;
+  static const uint64_t static_value2 = 0xcf9890fe81e13e44ULL;
 };
 
 template<class ContainerAllocator>
@@ -145,7 +150,8 @@ struct Definition< ::lab2::magnitude_<ContainerAllocator> >
     return "Header header\n\
 \n\
 #Pitch roll and yaw in degrees\n\
-float64 magnitude \n\
+float64 magnitude\n\
+bool ignoreAngle\n\
 \n\
 ================================================================================\n\
 MSG: std_msgs/Header\n\
@@ -184,6 +190,7 @@ namespace serialization
     {
       stream.next(m.header);
       stream.next(m.magnitude);
+      stream.next(m.ignoreAngle);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER;
@@ -207,6 +214,8 @@ struct Printer< ::lab2::magnitude_<ContainerAllocator> >
     Printer< ::std_msgs::Header_<ContainerAllocator> >::stream(s, indent + "  ", v.header);
     s << indent << "magnitude: ";
     Printer<double>::stream(s, indent + "  ", v.magnitude);
+    s << indent << "ignoreAngle: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.ignoreAngle);
   }
 };
 

@@ -50,6 +50,7 @@ add_message_files(
   magnitude.msg
   mux_control.msg
   range.msg
+  toggle.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -166,6 +167,11 @@ add_dependencies(reactive_control_node lab2_generate_messages_cpp)
 add_executable(mapping_node src/mapping.cpp)
 target_link_libraries(mapping_node ${catkin_LIBRARIES})
 add_dependencies(mapping_node lab2_generate_messages_cpp)
+
+add_executable(mapping_mux_node src/mapping_mux.cpp)
+target_link_libraries(mapping_mux_node ${catkin_LIBRARIES})
+add_dependencies(mapping_mux_node lab2_generate_messages_cpp)
+
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

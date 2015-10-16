@@ -2,6 +2,7 @@
 #include <lab2/range.h>
 #include <lab2/magnitude.h>
 #include <lab2/angle.h>
+#include <lab2/toggle.h>
 #include <fanboat_ll/fanboatLL.h>
 #include <algorithm>
 #include <sensor_msgs/Joy.h>
@@ -9,11 +10,12 @@
 #define BUFFER_SIZE 10
 #define ANGLE_TOL_START -5.0
 #define ANGLE_TOL_END -15.0 
-#define TURN_SPEED 15
+#define TURN_SPEED 30
 
 lab2::range rangeMsg;
 lab2::angle angleMsg;
 lab2::magnitude magMsg;
+lab2::toggle toggleMsg;
 fanboat_ll::fanboatLL IMUMsg;
 
 // to filter out noise, we are using running averages of n=BUFFER_SIZE values.
@@ -141,6 +143,7 @@ int main(int argc, char **argv)
 
     ros::Publisher mag_pub = n.advertise<lab2::magnitude>("/mapping_magnitude", 1000);
     ros::Publisher ang_pub = n.advertise<lab2::angle>("/mapping_angle", 1000);
+    ros::Publisher toggle_pub = n.advertise<lab2::toggle>("/map_switch", 1000); 
     
     ros::Subscriber sub = n.subscribe("/ir_range", 1000, inputCallback);
 	  ros::Subscriber fanboat = n.subscribe("/fanboatLL", 1000, IMUinputCallback);
@@ -153,6 +156,8 @@ int main(int argc, char **argv)
     while(ros::ok())
     {
       float angleDif = IMUMsg.yaw - startAngle;
+
+      toggleMsg.toggle = false;  
       
       // if the robot detects an angle difference that falls within a certain range, we can assume it has turned a full circle.    
       if((angleDif < ANGLE_TOL_START) && (angleDif > ANGLE_TOL_END)) {
@@ -199,12 +204,20 @@ int main(int argc, char **argv)
         }
        
         angleMsg.angle = bestAngle - 45.0;
-        ROS_INFO("CUR: %f, SK: %f, DIF: %f, BDIST: %f", IMUMsg.yaw, bestAngle, (IMUMsg.yaw - bestAngle), bestDistance);         
+        ROS_INFO("CUR: %f, SK: %f, DIF: %f, BDIST: %f", IMUMsg.yaw, bestAngle, (IMUMsg.yaw - bestAngle), bestDistance);
+        angleDif = IMUMsg.yaw - bestAngle;
+
+        // if the robot detects an angle difference that falls within a certain range, we can assume it has turned towards the best angle  
+        ROS_INFO("Here is the difference of our best angle! %f", angleDif);  
+        if(fmod(fabs(angleDif), 360.0) < 40.0) {
+          toggleMsg.toggle = true;
+        }        
       }
 
       mag_pub.publish(magMsg);
       ang_pub.publish(angleMsg);
-      
+      toggle_pub.publish(toggleMsg);      
+
       ros::spinOnce();
       loop_rate.sleep();
     }
