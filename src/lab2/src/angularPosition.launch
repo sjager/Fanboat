@@ -11,9 +11,9 @@
   <param name="target_dist" value="0.4" />
   <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
 
-  <node name="angular_position_node" pkg="lab2" type="angular_position_node" output="screen"/>
+  <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
   
-  <param name="pParam" value="0.017" />
+  <param name="pParam" value="0.02" />
   <param name="dParam" value="0.02" />
   <param name="iParam" value="0.0000" />
 

@@ -17,9 +17,9 @@ float angleVal = 0.0;
 
 void timerCallback(const ros::TimerEvent& event)
 {
-  if(switcher >= 7) {
+  if(switcher >= 4) {
     pubMagnitudeMsg.magnitude = FWD_MAGNITUDE;
-
+    pubMagnitudeMsg.ignoreAngle = true;
     ROS_INFO("forward, switcher: %i", switcher);
     
     switcher = 1;
@@ -30,6 +30,7 @@ void timerCallback(const ros::TimerEvent& event)
     angleVal = fmod(angleVal,360.0);
     pubAngleMsg.angle = angleVal;
     pubMagnitudeMsg.magnitude = 0.0;
+    pubMagnitudeMsg.ignoreAngle = false;
     ROS_INFO("turn: %f", pubAngleMsg.angle);
    
     switcher++;

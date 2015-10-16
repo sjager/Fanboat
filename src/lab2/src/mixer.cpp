@@ -45,7 +45,6 @@ int main(int argc, char **argv) {
 
 
     //ROS_INFO("RA: %f, LA: %f", right, left);
-
     float biggerVal = left;
     
     if(right >= left) {
@@ -66,6 +65,11 @@ int main(int argc, char **argv) {
     right += constant;
     left += constant;
     
+    if(magn > 0.0 && magMsg.ignoreAngle) {
+      right = magn;
+      left = magn;
+    }
+
     //ROS_INFO("Const: %f", constant);
 
     //these checks aren't technically needed, but just in case.
