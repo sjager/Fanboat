@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
   ros::Publisher magnitudePub = n.advertise<lab2::magnitude>("/joy_magnitude", 1000);
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
 
-  ros::Rate loop_rate(13);
+  ros::Rate loop_rate(15);
 
   while(ros::ok()) {
     anglePub.publish(anglePubMsg);

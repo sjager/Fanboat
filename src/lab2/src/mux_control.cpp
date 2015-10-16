@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
   
   ros::Subscriber sub = n.subscribe("/joy", 1000, inputCallback);
   
-  ros::Rate loop_rate(13);
+  ros::Rate loop_rate(8);
   
   muxControlPubMsg.state = INVALID_INPUT; 
   muxControlPub.publish(muxControlPubMsg);

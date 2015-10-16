@@ -18,11 +18,17 @@ float angleVal = 0.0;
 void timerCallback(const ros::TimerEvent& event)
 {
   if(switcher >= 4) {
-    pubMagnitudeMsg.magnitude = FWD_MAGNITUDE;
-    pubMagnitudeMsg.ignoreAngle = true;
-    ROS_INFO("forward, switcher: %i", switcher);
     
-    switcher = 1;
+    ROS_INFO("forward, switcher: %i", switcher);
+    if(switcher >= 5){
+      pubMagnitudeMsg.magnitude = 0;
+      pubMagnitudeMsg.ignoreAngle = true;
+      switcher = 1;
+    } else {
+      pubMagnitudeMsg.magnitude = FWD_MAGNITUDE;
+      pubMagnitudeMsg.ignoreAngle = true;
+      switcher++;
+    }
   } else {
     if(switcher == 1){
       angleVal += 120;

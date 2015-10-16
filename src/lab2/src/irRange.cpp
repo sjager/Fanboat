@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     ros::Publisher pub = n.advertise<lab2::range>("/ir_range", 1000);
     ros::Subscriber sub = n.subscribe("/fanboatLL", 1000, inputCallback);
 
-    ros::Rate loop_rate(8);
+    ros::Rate loop_rate(15);
 
     while(ros::ok())
     {
