@@ -143,6 +143,7 @@ add_executable(ball_detector_node src/ballDetector.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries (ball_detector_node ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} )
+add_dependencies(ball_detector_node ball_detector_generate_messages_cpp)
 
 #############
 ## Install ##

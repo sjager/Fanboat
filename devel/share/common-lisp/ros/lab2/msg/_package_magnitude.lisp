@@ -3,4 +3,6 @@
           HEADER
           MAGNITUDE-VAL
           MAGNITUDE
+          IGNOREANGLE-VAL
+          IGNOREANGLE
 ))

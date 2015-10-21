@@ -117,6 +117,7 @@ add_executable(landmarkDetector src/landmarkDetector.cpp src/barcode.c src/digit
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries (landmarkDetector ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} )
+add_dependencies(landmarkDetector landmark_self_sim_generate_messages_cpp)
 
 #############
 ## Install ##
