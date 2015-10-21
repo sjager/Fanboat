@@ -1,11 +1,27 @@
 <launch>
   <node name="joy_node" pkg="joy" type="joy_node" />
-
   <node name="joy_splitter_node" pkg="lab2" type="joy_splitter_node" />
 
+  <node name="triangle_node" pkg="lab2" type="triangle_node" />
+
+  <node name="mapping_mux_node" pkg="lab2" type="mapping_mux_node" output="screen" />
+  <node name="mux_node" pkg="lab2" type="mux_node" />
+  <node name="mux_control_node" pkg="lab2" type="mux_control_node"/>
+
+  <node name="reactive_control_node" pkg="lab2" type="reactive_control_node" />
+  <param name="target_dist" value="0.3" />
+
+  <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
+
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
-  <param name="pParam" value=".01" />
-  <param name="dParam" value=".01" />
+  <param name="pParam" value="0.03" />  
+  <param name="dParam" value="0.05" />
+  <param name="iParam" value="0.0" />
+
+  <node name="mixer_node" pkg="lab2" type="mixer_node" />
+
+  <node name="mapping_node" pkg="lab2" type="mapping_node" />
+  <param name="mapping_type" value="0" />
 
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
 </launch>
