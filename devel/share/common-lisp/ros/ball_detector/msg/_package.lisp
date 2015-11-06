@@ -3,9 +3,9 @@
   (:export
    "<DEBUGTIMES>"
    "DEBUGTIMES"
-   "<BALLLOCATION>"
-   "BALLLOCATION"
    "<BALLDEBUG>"
    "BALLDEBUG"
+   "<BALLLOCATION>"
+   "BALLLOCATION"
   ))
 
