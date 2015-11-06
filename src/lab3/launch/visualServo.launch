@@ -1,0 +1,23 @@
+<launch>
+  <node launch-prefix="nice" name="usb_cam" pkg="usb_cam" type="usb_cam_node">
+    <param name="video_device" value="/dev/video0" />
+    <!--param name="image_width" value="320" />
+    <param name="image_height" value="240" /-->
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+
+  
+  <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector">
+    <remap from="image" to="/usb_cam/image_raw"/>
+  </node>
+
+  <node name="landmark_follow_node" pkg="lab3" type="landmark_follow_node" output="screen"> 
+  </node>
+  <param name="landmarkNumber" value="68" />
+  <param name="targetDistance" value="1" />
+
+</launch>
