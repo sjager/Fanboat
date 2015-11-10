@@ -42,10 +42,9 @@ int main(int argc, char **argv) {
     ROS_INFO("I'm working");
     if(n.hasParam("detectBall")) 
     {            
-        n.param("detectBall", detectBall);
-        ROS_INFO("Set detect ball");
+        n.getParam("detectBall", detectBall);
     }
-    if(n.hasParam("detectLandmark")) n.param("detectLandmark", detectLandmark);
+    if(n.hasParam("detectLandmark")) n.getParam("detectLandmark", detectLandmark);
 
     ros::spinOnce();
     loop_rate.sleep();
