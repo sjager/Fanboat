@@ -5,10 +5,14 @@
 #include <landmark_self_sim/landmarkLocation.h>
 #include <lab3/fanboatControl.h>
 
-#define TURN_SPEED 15
+//#define TURN_SPEED 60
+//#define FORWARD_MAGNITUDE .9
 
 using landmark_self_sim::landmarkLocation;
 using lab3::fanboatControl;
+
+double turnSpeed;
+double forwardMagnitude;
 
 fanboatControl pubControlMsg;
 fanboat_ll::fanboatLL IMUMsg;
@@ -23,6 +27,8 @@ float targetAngle;
 
 bool servoMode = true;
 
+bool done = false;
+
 float calculateDistance(float height) {
   float dist = 145.86*pow(height, -0.993);
   return dist;
@@ -30,10 +36,11 @@ float calculateDistance(float height) {
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
-  if(servoMode)
-  {
-    pubControlMsg.angle = IMUMsg.yaw + TURN_SPEED;
+  if(servoMode && !done) {
+    pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
     ROS_INFO("TURN TO: %f",pubControlMsg.angle);
+  } else {
+    ROS_INFO("\n\n-------- I FOUND IT --------");
   }
 }
 
@@ -42,22 +49,24 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   distance = calculateDistance(location.height);
     
   if(location.code == landmarkNumber) {
-    ROS_INFO("\n\n-------- I FOUND IT --------\n\n");
-    ROS_INFO("tgt:%i dist:%f, dist:%f",landmarkNumber, distance, diff);
+    ROS_INFO("\n\n-------- I FOUND IT --------");
+    ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
   
     //fanboat should follow
     shouldFollow = true;
     servoMode = false;
-    diff = targetDistance - distance;
+    diff = distance - targetDistance;
     
-    targetAngle = IMUM.yaw;
+    targetAngle = IMUMsg.yaw;
     
     pubControlMsg.angle = targetAngle;
     
-    if(diff > 0) {
-      pubControlMsg.magnitude =  .2;
+    if((diff > 0) && (!done)) {
+      pubControlMsg.magnitude =  forwardMagnitude;
     } else {
       pubControlMsg.magnitude = 0.0;
+      done = true;
+      ROS_INFO("\n\n-------- DONE --------");
     }
         
   } else {
@@ -78,7 +87,10 @@ int main(int argc, char **argv) {
 
   n.getParam("landmarkNumber", landmarkNumber);
   n.getParam("targetDistance", targetDistance);
-
+  
+  n.getParam("turnSpeed", turnSpeed);
+  n.getParam("forwardMagnitude", forwardMagnitude);
+  
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);

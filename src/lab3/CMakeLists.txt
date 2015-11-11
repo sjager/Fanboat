@@ -113,6 +113,10 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
 ## Declare a C++ library
 # add_library(lab3
 #   src/${PROJECT_NAME}/lab3.cpp
@@ -125,6 +129,14 @@ catkin_package(
 
 ## Declare a C++ executable
 # add_executable(lab3_node src/lab3_node.cpp)
+
+add_executable(fanboat_interface_node src/fanboat_interface.cpp)
+target_link_libraries(fanboat_interface_node ${catkin_LIBRARIES})
+add_dependencies(fanboat_interface_node lab3_generate_messages_cpp)
+
+add_executable(landmark_follow_node src/landmark_follow.cpp)
+target_link_libraries(landmark_follow_node ${catkin_LIBRARIES})
+add_dependencies(landmark_follow_node lab3_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

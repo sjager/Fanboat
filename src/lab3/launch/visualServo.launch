@@ -14,10 +14,14 @@
     <remap from="image" to="/usb_cam/image_raw"/>
   </node>
 
+  <node name="fanboat_interface_node" pkg="lab3" type="fanboat_interface_node"/>
+
   <node name="landmark_follow_node" pkg="lab3" type="landmark_follow_node" output="screen"> 
   </node>
-  <param name="landmarkNumber" value="68" />
+  <param name="landmarkNumber" value="80" />
   <param name="targetDistance" value="1" />
+  <param name="turnSpeed" value="90" />
+  <param name="forwardMagnitude" value=".9" />
 
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
   <param name="pParam" value="0.03" />  

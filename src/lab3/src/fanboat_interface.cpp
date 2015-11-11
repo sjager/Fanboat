@@ -8,7 +8,7 @@
 
 using lab3::fanboatControl;
 
-fanboatcontrol controlMsg;
+fanboatControl controlMsg;
 
 // Declare messages for each input
 lab2::magnitude pubMagnitudeMsg;
