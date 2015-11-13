@@ -6,10 +6,11 @@
     <param name="pixel_format" value="yuyv" />
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
-    <remap from="/usb_cam/image_raw" to="/image"/>
+    <!-- <remap from="/usb_cam/image_raw" to="/image"/> -->
   </node>
 
   <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector" output="screen">
+    <remap from="image" to="/graphics_arbitrator/ballImage" />
   </node>
 
   <node name="landmark_debug1" pkg="image_view" type="image_view" respawn="false">
