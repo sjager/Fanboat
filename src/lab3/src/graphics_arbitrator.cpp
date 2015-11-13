@@ -8,7 +8,7 @@ ros::Publisher ballpub;
 ros::Publisher landmarkpub;
 
 void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
-  //ROS_INFO("About to try publishing %i", detectBall);
+ ROS_INFO("About to try publishing %i", detectLandmark);
   if(detectBall > 0) {
     ballpub.publish(*msg);
   }
