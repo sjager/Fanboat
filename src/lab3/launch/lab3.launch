@@ -1,0 +1,5 @@
+<launch>
+  <node name="graphics_arbitrator" pkg="lab3" type="graphics_abitrator_node" />
+  <param name="" value="false" />
+  <param name="" value="true" />
+</launch>

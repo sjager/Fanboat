@@ -1,27 +1,18 @@
 #include <ros/ros.h>
-#include <landmark_self_sim/landmarkLocation.h>
-#include <ball_detector/ballLocation.h>
+#include <sensor_msgs/Image.h>
 #include <string.h>
-
-// Declare messages for each input
-landmark_self_sim::landmarkLocation inputLandmarkMsg;
-ball_detector::ballLocation inputBallMsg;
-
 int detectBall = false;
-int detectLandmark = true;
+int detectLandmark = false;
 
 ros::Publisher ballpub;
 ros::Publisher landmarkpub;
 
-void ballCallback(const ball_detector::ballLocation::ConstPtr& msg) {
-  ROS_INFO("About to try publishing %i", detectBall);
+void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
+  //ROS_INFO("About to try publishing %i", detectBall);
   if(detectBall > 0) {
-    ROS_INFO("Publishing Message");
     ballpub.publish(*msg);
   }
-}
 
-void landmarkCallback(const landmark_self_sim::landmarkLocation::ConstPtr& msg) {
   if(detectLandmark > 0) {
     landmarkpub.publish(*msg);
   }
@@ -30,11 +21,11 @@ void landmarkCallback(const landmark_self_sim::landmarkLocation::ConstPtr& msg) 
 int main(int argc, char **argv) {
   ros::init(argc, argv, "graphics_arbitrator_node");
   ros::NodeHandle n;
-  ballpub = n.advertise<ball_detector::ballLocation>("/graphics_arbitrator/ballLocation", 1000);
-  landmarkpub = n.advertise<landmark_self_sim::landmarkLocation>("/graphics_arbitrator/landmarkLocation", 1000);
+  ballpub = n.advertise<sensor_msgs::Image>("/graphics_arbitrator/ballImage", 1000);
+  landmarkpub = n.advertise<sensor_msgs::Image>("/graphics_arbitrator/landmarkImage", 1000);
 
-  ros::Subscriber ballsub = n.subscribe<ball_detector::ballLocation>("/ballLocation", 1000, ballCallback);
-  ros::Subscriber landmarksub = n.subscribe<landmark_self_sim::landmarkLocation>("/landmarkLocation", 1000, landmarkCallback);
+  ros::Subscriber ballsub = n.subscribe<sensor_msgs::Image>("/usb_cam/image_raw", 1000, imageCallback);
+  //ros::Subscriber landmarksub = n.subscribe<landmark_self_sim::landmarkLocation>("/landmarkLocation", 1000, landmarkCallback);
 
   ros::Rate loop_rate(8);
 
@@ -44,8 +35,10 @@ int main(int argc, char **argv) {
     {            
         n.getParam("detectBall", detectBall);
     }
-    if(n.hasParam("detectLandmark")) n.getParam("detectLandmark", detectLandmark);
-
+    if(n.hasParam("detectLandmark"))
+    { 
+        n.getParam("detectLandmark", detectLandmark);
+    }
     ros::spinOnce();
     loop_rate.sleep();
   }
