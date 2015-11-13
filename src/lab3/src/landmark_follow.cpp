@@ -25,9 +25,17 @@ bool shouldFollow = false;
 float diff = 0;
 float targetAngle;
 
+// tells the fanboat to spin
 bool servoMode = true;
 
+// stops the node from sending any additional commands after the fanboat has stopped at the appropriate distance
 bool done = false;
+
+// keeps track of how long the fanboat has seen the target landmark.
+// Used for filtering out noisy data
+int consecutiveHits = 0;
+int consecutiveHitsThreshold;
+int hitsMax;
 
 float calculateDistance(float height) {
   float dist = 145.86*pow(height, -0.993);
@@ -52,6 +60,8 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     ROS_INFO("\n\n-------- I FOUND IT --------");
     ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
   
+    consecutiveHits++;
+  
     //fanboat should follow
     shouldFollow = true;
     servoMode = false;
@@ -70,12 +80,33 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     }
         
   } else {
+  
     ROS_INFO("\n\n-------- I DON'T SEE IT --------\n\n");
-    //don't follow
-    servoMode = true;
-    shouldFollow = false;
-    diff = 0;
-    pubControlMsg.magnitude = 0.0;
+    
+    consecutiveHits--;
+    
+    // often the camera fails to recognize the image as the correct landmark,
+    // causing the fanboat to stutter. We can use a consecutiveHits counter to
+    // attempt to smooth out the stuttering. The logic is that if the robot has frequently
+    // recognized the landmark, then it probably is actually facing that landmark.
+    if(consecutiveHits < consecutiveHitsThreshold)
+    {
+      //don't follow
+      servoMode = true;
+      shouldFollow = false;
+      diff = 0;
+      pubControlMsg.magnitude = 0.0;
+    }
+    
+  }
+  
+  if(consecutiveHits > hitsMax)
+  {
+    consecutiveHits = hitsMax;
+  }
+  else if (consecutiveHits < 0)
+  {
+    consectuiveHits = 0;
   }
   
 }
@@ -91,6 +122,9 @@ int main(int argc, char **argv) {
   n.getParam("turnSpeed", turnSpeed);
   n.getParam("forwardMagnitude", forwardMagnitude);
   
+  n.getParam("consecutiveHitsThreshold", consecutiveHitsThreshold);
+  n.getParam("hitsMax", hitsMax);
+   
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);

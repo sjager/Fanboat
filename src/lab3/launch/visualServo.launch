@@ -22,6 +22,8 @@
   <param name="targetDistance" value="1" />
   <param name="turnSpeed" value="90" />
   <param name="forwardMagnitude" value=".9" />
+  <param name="consecutiveHitsThreshold" value="5" />
+  <param name="hitsMax" value="10" />
 
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
   <param name="pParam" value="0.03" />  
