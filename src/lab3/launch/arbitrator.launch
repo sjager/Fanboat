@@ -1,0 +1,6 @@
+<launch>
+    <node name="graphics_arbitrator_node" pkg="lab3" type="graphics_arbitrator_node" output="screen">
+        
+    </node>
+    <param name="detectBall" value="0" />
+</launch>
