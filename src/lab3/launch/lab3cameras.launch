@@ -20,18 +20,20 @@
   <node name="landmark_debug2" pkg="image_view" type="image_view" respawn="false">
     <remap from="image" to="/graphics_arbitrator/landmarkImage"/>
   </node>
-<!--
+
   <rosparam param="thresh/">
     high: {h: 64, s: 206, v: 154}
     low:  {h: 22, s: 99,  v: 45}
   </rosparam>
 
   <node name="ball_detector_node" pkg="ball_detector" type="ball_detector_node" output="screen">
+    <remap from="image" to="/graphics_arbitrator/ballImage"/>
   </node>
   
   <node name="ballDetectorConfig" pkg="ball_detector" type="configGUI.py">
+    <remap from="image" to="/graphics_arbitrator/ballImage"/>
   </node>
   
   <include file="$(find ball_detector)/launch/displayDebugImages.launch" />
--->
+
 </launch>
