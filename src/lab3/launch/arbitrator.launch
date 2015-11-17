@@ -1,4 +1,10 @@
 <launch>
+    <node name="graphics_arbitrator_node" pkg="lab3" type="graphics_arbitrator_node" output="screen">
+        
+    </node>
+    <param name="detectBall" value="0" />
+    <param name="detectLandmark" value="0" />
+
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
     <param name="video_device" value="/dev/video0" />
     <param name="image_width" value="640" />
@@ -34,6 +40,4 @@
     <remap from="image" to="/graphics_arbitrator/ballImage"/>
   </node>
   
-  <include file="$(find ball_detector)/launch/displayDebugImages.launch" />
-
 </launch>
