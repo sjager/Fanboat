@@ -17,6 +17,7 @@ lab2::angle pubAngleMsg;
 void controlInputCallback(const lab3::fanboatControl::ConstPtr& msg) {
   controlMsg = *msg;
   pubMagnitudeMsg.magnitude = controlMsg.magnitude;
+  pubMagnitudeMsg.ignoreAngle = controlMsg.ignoreAngle;
   pubAngleMsg.angle = controlMsg.angle;
 }
 
