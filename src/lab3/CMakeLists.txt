@@ -141,6 +141,11 @@ add_executable(landmark_follow_node src/landmark_follow.cpp)
 target_link_libraries(landmark_follow_node ${catkin_LIBRARIES})
 add_dependencies(landmark_follow_node lab3_generate_messages_cpp)
 
+add_executable(collection_switch_node src/collection_switch.cpp)
+target_link_libraries(collection_switch_node ${catkin_LIBRARIES})
+add_dependencies(collection_switch_node lab3_generate_messages_cpp)
+
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(graphics_arbitrator_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
