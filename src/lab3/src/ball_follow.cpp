@@ -27,6 +27,12 @@ float targetAngle;
 // tells the fanboat to spin
 bool servoMode = true;
 
+// true if the camera sees a ball
+bool seesBall = false;
+
+// true if ball is centered in the cam's view
+bool ballCentered = true;
+
 // stops the node from sending any additional commands after the fanboat has stopped at the appropriate distance
 bool done = false;
 
@@ -67,8 +73,12 @@ bool ballAtCenter(float x)
 }
 
 void ballCallback(const ball_detector::ballLocation::ConstPtr& msg) {
+  seesBall = true;
   bLocation = *msg;
-  bDistance = calculateBallDistance(bLocation.radius);  
+  bDistance = calculateBallDistance(bLocation.radius);
+  diff = bDistance - targetDistance;
+  ballCentered = ballAtCenter(bLocation.x);
+  seesBall = false;
 }
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
@@ -80,88 +90,6 @@ void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   } else {
     pubControlMsg.angle = IMUMsg.yaw;
     //ROS_INFO("\n\n-------- DON'T SPIN --------");
-  }
-}
-
-void locationCallback(const landmarkLocation::ConstPtr& msg) {
-  hasLandmark = true;
-  location = *msg;
-  distance = calculateDistance(location.height);
-  pubControlMsg.ignoreAngle = false;
-  
-  if(consecutiveHits > hitsMax)
-  {
-    consecutiveHits = hitsMax;
-  }
-  else if (consecutiveHits < 0)
-  {
-    consecutiveHits = 0;
-  }
-  
-  if(location.code == landmarkNumber) {
-    //ROS_INFO("\n\n-------- I FOUND IT --------");
-    //ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
-  
-    consecutiveHits++;
-  
-    //fanboat should follow
-    servoMode = false;
-    diff = distance - targetDistance;
-    
-    //stop rotating
-    pubControlMsg.angle = IMUMsg.yaw;
-    
-    if((diff > 0)) {
-
-      pubControlMsg.magnitude =  forwardMagnitude;
-      pubControlMsg.ignoreAngle = true;
-      done = false;
-      ROS_INFO("\n----Keep Going!----\n");
-    } else {
-      pubControlMsg.magnitude = 0.0;
-      //done = true;
-      //ROS_INFO("\n\n-------- DONE --------");
-    }
-        
-  } else {
-    //it doesn't see the correct landmark
-  
-    ROS_INFO("\n\n-------- I DON'T SEE IT --------\n\n");
-    
-    consecutiveHits--;
-    
-    // often the camera fails to recognize the image as the correct landmark,
-    // causing the fanboat to stutter. We can use a consecutiveHits counter to
-    // attempt to smooth out the stuttering. The logic is that if the robot has frequently
-    // recognized the landmark, then it probably is actually facing that landmark.
-    
-    if(consecutiveHits >= consecutiveHitsThreshold)
-    {
-      ROS_INFO("ignore noise\n");
-    }
-    if(consecutiveHits < consecutiveHitsThreshold)
-    {
-      //don't follow
-      servoMode = true;
-      diff = 0;
-      pubControlMsg.magnitude = 0.12;
-    }
-    
-  }
-  
-  ROS_INFO("counter: %i", consecutiveHits);
-  hasLandmark = false;
-}
-
-void printMode()
-{
-  if(servoMode)
-  {
-    ROS_INFO("servoing");
-  }
-  else
-  {
-    ROS_INFO("following");
   }
 }
 
@@ -181,24 +109,41 @@ int main(int argc, char **argv) {
   
   n.setParam("detectLandmark", 1);
  
-  ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
+  ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/follow/ball", 1000);
   
-  ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
   ros::Subscriber ballSub = n.subscribe("ballLocation", 1000, ballCallback);
   
   ros::Subscriber fanboat = n.subscribe("/fanboatLL", 1000, IMUinputCallback);
   
-  
   ros::Rate loop_rate(4);
   
   while(ros::ok()) {
+    pubControlMsg.ignoreAngle = false;
     
-    if(!hasLandmark)
+    //if the ball is visible
+    if(seesBall)
     {
-      consecutiveHits = 0;
-      servoMode = true;
+      //if the ball isn't centered
+      if(ballCentered)
+      {
+        //rotate
+        pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
+      }
+      else //ball is centered
+      {
+        if(!done)
+        {
+          //go forward
+          pubControlMsg.magnitude = forwardMagnitude;
+          pubControlMsg.ignoreAngle = true;
+        }
+      }
     }
-  
+    else
+    {
+      pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
+    }  
+    
     controlPub.publish(pubControlMsg);
     ros::spinOnce();
     loop_rate.sleep();

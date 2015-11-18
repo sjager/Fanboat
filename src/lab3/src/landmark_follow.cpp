@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
   
   n.setParam("detectLandmark", 1);
  
-  ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
+  ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/follow/landmark", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
   
