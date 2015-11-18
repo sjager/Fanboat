@@ -20,10 +20,10 @@
   </node>
   <param name="landmarkNumber" value="80" />
   <param name="targetDistance" value="1" />
-  <param name="turnSpeed" value="90" />
-  <param name="forwardMagnitude" value=".8" />
-  <param name="consecutiveHitsThreshold" value="1" />
-  <param name="hitsMax" value="30" />
+  <param name="turnSpeed" value="45" />
+  <param name="forwardMagnitude" value=".75" />
+  <param name="consecutiveHitsThreshold" value="5" />
+  <param name="hitsMax" value="15" />
 
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
   <param name="pParam" value="0.03" />  
