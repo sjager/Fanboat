@@ -1,0 +1,41 @@
+<launch>
+  <node name="graphics_arbitrator_node" pkg="lab3" type="graphics_arbitrator_node" output="screen">
+      
+  </node>
+  <param name="detectBall" value="0" />
+  <param name="detectLandmark" value="0" />
+
+  <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
+
+  <node name="collection_switch_node" pkg="lab3" type="collection_switch_node" />
+
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <!-- <remap from="/usb_cam/image_raw" to="/image"/> -->
+  </node>
+
+  <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector" output="screen">
+    <remap from="image" to="/graphics_arbitrator/landmarkImage" />
+  </node>
+
+  <node name="ball_follow_node" pkg="lab3" type="ball_follow_node" />
+
+  <rosparam param="thresh/">
+    high: {h: 64, s: 206, v: 154}
+    low:  {h: 22, s: 99,  v: 45}
+  </rosparam>
+
+  <node name="ball_detector_node" pkg="ball_detector" type="ball_detector_node" output="screen">
+    <remap from="image" to="/graphics_arbitrator/ballImage"/>
+  </node>
+  
+  <node name="ballDetectorConfig" pkg="ball_detector" type="configGUI.py">
+    <remap from="image" to="/graphics_arbitrator/ballImage"/>
+  </node>
+  
+</launch>
