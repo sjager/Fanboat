@@ -71,6 +71,7 @@ void ballCallback(const ball_detector::ballLocation::ConstPtr& msg) {
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
+  ROS_INFO("Current Angle: %f" IMUMsg.yaw);
 }
 
 int main(int argc, char **argv) {
@@ -121,7 +122,7 @@ int main(int argc, char **argv) {
     }
     else
     {
-    ROS_INFO("I don't see a ball :(\n");
+      ROS_INFO("I don't see a ball :(\n");
       pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
     }  
     
