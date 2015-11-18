@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
       //if the ball isn't centered
       if(!ballCentered)
       {
-        ROS_INFO("The ball ain't centered\n")
+        ROS_INFO("The ball ain't centered\n");
         //rotate
         pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
       }
@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
     else
     {
     ROS_INFO("I don't see a ball :(\n");
-      pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
+    pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
     }  
     
     controlPub.publish(pubControlMsg);
