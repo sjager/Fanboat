@@ -44,16 +44,29 @@ float calculateDistance(float height) {
   return dist;
 }
 
+bool betweenBounds(landmarkLocation msg)
+{
+    if(msg.xtop > 280 && msg.xtop < 360)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
   //if(servoMode && !done) {
   if(servoMode) {  
     pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
-    //ROS_INFO("TURN TO: %f",pubControlMsg.angle);
+    ROS_INFO("TURN TO: %f",pubControlMsg.angle);
     
   } else {
     pubControlMsg.angle = IMUMsg.yaw;
-    //ROS_INFO("\n\n-------- DON'T SPIN --------");
+    ROS_INFO("\n\n-------- DON'T SPIN --------");
   }
 }
 
@@ -85,10 +98,12 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     //stop rotating
     pubControlMsg.angle = IMUMsg.yaw;
     
-    //if((diff > 0) && (!done)) {
     if((diff > 0)) {
+
       pubControlMsg.magnitude =  forwardMagnitude;
       pubControlMsg.ignoreAngle = true;
+      done = false;
+      ROS_INFO("\n----Keep Going!----\n");
     } else {
       pubControlMsg.magnitude = 0.0;
       //done = true;
@@ -98,7 +113,7 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   } else {
     //it doesn't see the correct landmark
   
-    //ROS_INFO("\n\n-------- I DON'T SEE IT --------\n\n");
+    ROS_INFO("\n\n-------- I DON'T SEE IT --------\n\n");
     
     consecutiveHits--;
     
@@ -150,7 +165,9 @@ int main(int argc, char **argv) {
   
   n.getParam("consecutiveHitsThreshold", consecutiveHitsThreshold);
   n.getParam("hitsMax", hitsMax);
-   
+  
+  n.setParam("detectLandmark", 1);
+ 
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
@@ -159,12 +176,6 @@ int main(int argc, char **argv) {
   ros::Rate loop_rate(4);
   
   while(ros::ok()) {
-  
-    //if(done)
-    //{
-      //pubControlMsg.magnitude = 0;
-     //pubControlMsg.angle = IMUMsg.yaw;
-    //}
     
     if(!hasLandmark)
     {
