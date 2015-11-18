@@ -5,7 +5,9 @@
   <param name="detectBall" value="0" />
   <param name="detectLandmark" value="0" />
 
-  <node name="collection_switch_node" pxg="lab3" type="collection_switch_node" />
+  <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
+
+  <node name="collection_switch_node" pkg="lab3" type="collection_switch_node" />
 
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
     <param name="video_device" value="/dev/video0" />
