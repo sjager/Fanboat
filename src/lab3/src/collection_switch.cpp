@@ -5,14 +5,26 @@
 #include <landmark_self_sim/landmarkLocation.h>
 #include <lab3/fanboatControl.h>
 #include <lab2/range.h>
+#include <lab3/fanboatControl.h>
 
 #define THRESH  0.3
 
 lab2::range irMsg;
+lab3::fanboatControl controlMsg;
 
 void irCallback(const lab2::range::ConstPtr& msg)
 {
     irMsg = *msg;
+}
+
+void ballCallback(const lab3::fanboatControl::ConstPtr& msg)
+{
+    controlMsg = *msg;
+}
+
+void landCallback(const lab3::fanboatControl::ConstPtr& msg)
+{
+    controlMsg = *msg;
 }
 
 int main(int argc, char **argv)
@@ -21,7 +33,10 @@ int main(int argc, char **argv)
     
     ros::NodeHandle n;
 
-    ros::Subscriber sub = n.subscribe("/ir_range", 1000, irCallback);
+    ros::Subscriber irSub = n.subscribe("/ir_range", 1000, irCallback);
+    ros::Subscriber ballSub = n.subscribe("/follow/ball", 1000, ballCallback);
+    ros::Subscriber landSub = n.subscribe("/follow/landmark", 1000, landCallback);
+    ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
 
     ros::Rate loop_rate(15);
 
@@ -42,6 +57,8 @@ int main(int argc, char **argv)
             n.setParam("detectBall", 1);
             n.setParam("detectLandmark", 0);
         }
+
+        controlPub.publish(controlMsg);
         
         ros::spinOnce();
         loop_rate.sleep();
