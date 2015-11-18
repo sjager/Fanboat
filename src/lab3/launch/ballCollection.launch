@@ -6,6 +6,8 @@
   <param name="detectLandmark" value="0" />
 
   <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
+  <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
+  <node name="fanboat_interface_node" pkg="lab3" type="fanboat_interface_node" />
 
   <node name="collection_switch_node" pkg="lab3" type="collection_switch_node" />
 
@@ -24,6 +26,7 @@
   </node>
 
   <node name="ball_follow_node" pkg="lab3" type="ball_follow_node" />
+  <node name="landmark_follow_node" pkg="lab3" type="landmark_follow_node" />
 
   <rosparam param="thresh/">
     high: {h: 64, s: 206, v: 154}
@@ -37,5 +40,12 @@
   <node name="ballDetectorConfig" pkg="ball_detector" type="configGUI.py">
     <remap from="image" to="/graphics_arbitrator/ballImage"/>
   </node>
+
+  <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
+  <param name="pParam" value="0.03" />  
+  <param name="dParam" value="0.05" />
+  <param name="iParam" value="0.0" />
   
+  <node name="mixer_node" pkg="lab2" type="mixer_node" />
+
 </launch>
