@@ -45,7 +45,6 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-
 add_message_files(
   FILES
   fanboatControl.msg
@@ -132,6 +131,8 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(graphics_arbitrator_node src/graphics_arbitrator.cpp)
+add_dependencies(graphics_arbitrator_node lab3_generate_messages_cpp)
+target_link_libraries(graphics_arbitrator_node ${catkin_LIBRARIES})
 
 add_executable(fanboat_interface_node src/fanboat_interface.cpp)
 target_link_libraries(fanboat_interface_node ${catkin_LIBRARIES})
@@ -148,12 +149,10 @@ add_dependencies(collection_switch_node lab3_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(graphics_arbitrator_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(graphics_arbitrator_node
-  ${catkin_LIBRARIES}
-)
+
 
 #############
 ## Install ##

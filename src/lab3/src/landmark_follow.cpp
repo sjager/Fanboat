@@ -30,6 +30,9 @@ bool servoMode = true;
 // stops the node from sending any additional commands after the fanboat has stopped at the appropriate distance
 bool done = false;
 
+// needed to keep data in sync because the landmark data only publishes when it sees something
+bool hasLandmark = false;
+
 // keeps track of how long the fanboat has seen the target landmark.
 // Used for filtering out noisy data
 int consecutiveHits = 0;
@@ -56,7 +59,8 @@ bool betweenBounds(landmarkLocation msg)
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
-  if(servoMode && !done) {
+  //if(servoMode && !done) {
+  if(servoMode) {  
     pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
     ROS_INFO("TURN TO: %f",pubControlMsg.angle);
     
@@ -67,12 +71,23 @@ void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
 }
 
 void locationCallback(const landmarkLocation::ConstPtr& msg) {
+  hasLandmark = true;
   location = *msg;
   distance = calculateDistance(location.height);
   pubControlMsg.ignoreAngle = false;
-  if(location.code == landmarkNumber && betweenBounds(location)) {
-    ROS_INFO("\n\n-------- I FOUND IT --------");
-    ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
+  
+  if(consecutiveHits > hitsMax)
+  {
+    consecutiveHits = hitsMax;
+  }
+  else if (consecutiveHits < 0)
+  {
+    consecutiveHits = 0;
+  }
+  
+  if(location.code == landmarkNumber) {
+    //ROS_INFO("\n\n-------- I FOUND IT --------");
+    //ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
   
     consecutiveHits++;
   
@@ -83,15 +98,16 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     //stop rotating
     pubControlMsg.angle = IMUMsg.yaw;
     
-    if((diff > 0) ){// && (!done)) {
+    if((diff > 0)) {
+
       pubControlMsg.magnitude =  forwardMagnitude;
       pubControlMsg.ignoreAngle = true;
       done = false;
       ROS_INFO("\n----Keep Going!----\n");
     } else {
       pubControlMsg.magnitude = 0.0;
-      done = true;
-      ROS_INFO("\n\n-------- DONE --------");
+      //done = true;
+      //ROS_INFO("\n\n-------- DONE --------");
     }
         
   } else {
@@ -115,22 +131,13 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
       //don't follow
       servoMode = true;
       diff = 0;
-      pubControlMsg.magnitude = 0.0;
+      pubControlMsg.magnitude = 0.12;
     }
     
   }
   
-  if(consecutiveHits > hitsMax)
-  {
-    consecutiveHits = hitsMax;
-  }
-  else if (consecutiveHits < 0)
-  {
-    consecutiveHits = 0;
-  }
-  
   ROS_INFO("counter: %i", consecutiveHits);
-  
+  hasLandmark = false;
 }
 
 void printMode()
@@ -158,15 +165,24 @@ int main(int argc, char **argv) {
   
   n.getParam("consecutiveHitsThreshold", consecutiveHitsThreshold);
   n.getParam("hitsMax", hitsMax);
-   
+  
+  n.setParam("detectLandmark", 1);
+ 
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
   ros::Subscriber fanboat = n.subscribe("/fanboatLL", 1000, IMUinputCallback);
   
-  ros::Rate loop_rate(8);
+  ros::Rate loop_rate(4);
   
   while(ros::ok()) {
+    
+    if(!hasLandmark)
+    {
+      consecutiveHits = 0;
+      servoMode = true;
+    }
+  
     controlPub.publish(pubControlMsg);
     ros::spinOnce();
     loop_rate.sleep();
