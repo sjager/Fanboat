@@ -2,10 +2,13 @@
 #include <string.h>
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
-#include <landmark_self_sim/landmarkLocation.h>
 #include <lab3/fanboatControl.h>
+#include <ball_detector/ballLocation.h>
 
-using landmark_self_sim::landmarkLocation;
+#define HIGH_BOUND   360
+#define LOW_BOUND  280
+
+using ball_detector::ballLocation;
 using lab3::fanboatControl;
 
 double turnSpeed;
@@ -14,10 +17,9 @@ double forwardMagnitude;
 fanboatControl pubControlMsg;
 fanboat_ll::fanboatLL IMUMsg;
 
-landmarkLocation location;
+ballLocation bLocation;
 
-float distance;
-int landmarkNumber;
+float bDistance;
 double targetDistance;
 float diff = 0;
 float targetAngle;
@@ -28,19 +30,11 @@ bool servoMode = true;
 // stops the node from sending any additional commands after the fanboat has stopped at the appropriate distance
 bool done = false;
 
-// needed to keep data in sync because the landmark data only publishes when it sees something
-bool hasLandmark = false;
-
 // keeps track of how long the fanboat has seen the target landmark.
 // Used for filtering out noisy data
 int consecutiveHits = 0;
 int consecutiveHitsThreshold;
 int hitsMax;
-
-float calculateDistance(float height) {
-  float dist = 145.86*pow(height, -0.993);
-  return dist;
-}
 
 bool betweenBounds(landmarkLocation msg)
 {
@@ -52,19 +46,40 @@ bool betweenBounds(landmarkLocation msg)
     {
         return false;
     }
+}
 
+float calculateBallDistance(float radius)
+{
+	float dist = 0.01*4887.4*pow(radius, -1.071)
+	return dist;
+}
+
+bool ballAtCenter(float x)
+{
+	if(x>HIGH_BOUND && x<LOW_BOUND)
+	{
+    	return true;
+	}
+	else
+	{
+    	return false;
+	}
+}
+
+void ballCallback(const ball_detector::ballLocation::ConstPtr& msg) {
+  bLocation = *msg;
+  bDistance = calculateBallDistance(bLocation.radius);  
 }
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
-  //if(servoMode && !done) {
   if(servoMode) {  
     pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
-    ROS_INFO("TURN TO: %f",pubControlMsg.angle);
+    //ROS_INFO("TURN TO: %f",pubControlMsg.angle);
     
   } else {
     pubControlMsg.angle = IMUMsg.yaw;
-    ROS_INFO("\n\n-------- DON'T SPIN --------");
+    //ROS_INFO("\n\n-------- DON'T SPIN --------");
   }
 }
 
@@ -169,6 +184,7 @@ int main(int argc, char **argv) {
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
+  ros::Subscriber ballSub = n.subscribe("ballLocation", 1000, ballCallback);
   
   ros::Subscriber fanboat = n.subscribe("/fanboatLL", 1000, IMUinputCallback);
   
