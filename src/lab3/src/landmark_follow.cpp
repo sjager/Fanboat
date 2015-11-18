@@ -21,7 +21,6 @@ landmarkLocation location;
 float distance;
 int landmarkNumber;
 double targetDistance;
-bool shouldFollow = false;
 float diff = 0;
 float targetAngle;
 
@@ -42,37 +41,53 @@ float calculateDistance(float height) {
   return dist;
 }
 
+bool betweenBounds(landmarkLocation msg)
+{
+    if(msg.xtop > 280 && msg.xtop < 360)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
   if(servoMode && !done) {
     pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
     ROS_INFO("TURN TO: %f",pubControlMsg.angle);
+    
   } else {
-    ROS_INFO("\n\n-------- I FOUND IT --------");
+    pubControlMsg.angle = IMUMsg.yaw;
+    ROS_INFO("\n\n-------- DON'T SPIN --------");
   }
 }
 
 void locationCallback(const landmarkLocation::ConstPtr& msg) {
   location = *msg;
   distance = calculateDistance(location.height);
-    
-  if(location.code == landmarkNumber) {
+  pubControlMsg.ignoreAngle = false;
+  if(location.code == landmarkNumber && betweenBounds(location)) {
     ROS_INFO("\n\n-------- I FOUND IT --------");
     ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
   
     consecutiveHits++;
   
     //fanboat should follow
-    shouldFollow = true;
     servoMode = false;
     diff = distance - targetDistance;
     
-    targetAngle = IMUMsg.yaw;
+    //stop rotating
+    pubControlMsg.angle = IMUMsg.yaw;
     
-    pubControlMsg.angle = targetAngle;
-    
-    if((diff > 0) && (!done)) {
+    if((diff > 0) ){// && (!done)) {
       pubControlMsg.magnitude =  forwardMagnitude;
+      pubControlMsg.ignoreAngle = true;
+      done = false;
+      ROS_INFO("\n----Keep Going!----\n");
     } else {
       pubControlMsg.magnitude = 0.0;
       done = true;
@@ -80,6 +95,7 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     }
         
   } else {
+    //it doesn't see the correct landmark
   
     ROS_INFO("\n\n-------- I DON'T SEE IT --------\n\n");
     
@@ -89,11 +105,15 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     // causing the fanboat to stutter. We can use a consecutiveHits counter to
     // attempt to smooth out the stuttering. The logic is that if the robot has frequently
     // recognized the landmark, then it probably is actually facing that landmark.
+    
+    if(consecutiveHits >= consecutiveHitsThreshold)
+    {
+      ROS_INFO("ignore noise\n");
+    }
     if(consecutiveHits < consecutiveHitsThreshold)
     {
       //don't follow
       servoMode = true;
-      shouldFollow = false;
       diff = 0;
       pubControlMsg.magnitude = 0.0;
     }
@@ -106,9 +126,23 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   }
   else if (consecutiveHits < 0)
   {
-    consectuiveHits = 0;
+    consecutiveHits = 0;
   }
   
+  ROS_INFO("counter: %i", consecutiveHits);
+  
+}
+
+void printMode()
+{
+  if(servoMode)
+  {
+    ROS_INFO("servoing");
+  }
+  else
+  {
+    ROS_INFO("following");
+  }
 }
 
 int main(int argc, char **argv) {
