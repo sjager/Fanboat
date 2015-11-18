@@ -142,6 +142,11 @@ add_executable(landmark_follow_node src/landmark_follow.cpp)
 target_link_libraries(landmark_follow_node ${catkin_LIBRARIES})
 add_dependencies(landmark_follow_node lab3_generate_messages_cpp)
 
+add_executable(ball_follow_node src/ball_follow.cpp)
+target_link_libraries(ball_follow_node ${catkin_LIBRARIES})
+add_dependencies(ball_follow_node lab3_generate_messages_cpp)
+
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 

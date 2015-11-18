@@ -42,21 +42,9 @@ int consecutiveHits = 0;
 int consecutiveHitsThreshold;
 int hitsMax;
 
-bool betweenBounds(landmarkLocation msg)
-{
-    if(msg.xtop > 280 && msg.xtop < 360)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 float calculateBallDistance(float radius)
 {
-	float dist = 0.01*4887.4*pow(radius, -1.071)
+	float dist = 0.01*4887.4*pow(radius, -1.071);
 	return dist;
 }
 
@@ -94,11 +82,10 @@ void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
 }
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "landmark_follow_node");
+  ros::init(argc, argv, "ball_follow_node");
 
   ros::NodeHandle n;
 
-  n.getParam("landmarkNumber", landmarkNumber);
   n.getParam("targetDistance", targetDistance);
   
   n.getParam("turnSpeed", turnSpeed);
@@ -107,8 +94,6 @@ int main(int argc, char **argv) {
   n.getParam("consecutiveHitsThreshold", consecutiveHitsThreshold);
   n.getParam("hitsMax", hitsMax);
   
-  n.setParam("detectLandmark", 1);
- 
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/follow/ball", 1000);
   
   ros::Subscriber ballSub = n.subscribe("ballLocation", 1000, ballCallback);
