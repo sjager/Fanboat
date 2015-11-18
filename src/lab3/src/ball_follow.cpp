@@ -71,14 +71,6 @@ void ballCallback(const ball_detector::ballLocation::ConstPtr& msg) {
 
 void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   IMUMsg = *msg;
-  if(servoMode) {  
-    pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
-    //ROS_INFO("TURN TO: %f",pubControlMsg.angle);
-    
-  } else {
-    pubControlMsg.angle = IMUMsg.yaw;
-    //ROS_INFO("\n\n-------- DON'T SPIN --------");
-  }
 }
 
 int main(int argc, char **argv) {
@@ -108,9 +100,11 @@ int main(int argc, char **argv) {
     //if the ball is visible
     if(seesBall)
     {
+      ROS_INFO("I see a ball\n");
       //if the ball isn't centered
-      if(ballCentered)
+      if(!ballCentered)
       {
+        ROS_INFO("The ball ain't centered\n")
         //rotate
         pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
       }
@@ -118,6 +112,7 @@ int main(int argc, char **argv) {
       {
         if(!done)
         {
+          ROS_INFO("Go forth!\n");
           //go forward
           pubControlMsg.magnitude = forwardMagnitude;
           pubControlMsg.ignoreAngle = true;
@@ -126,6 +121,7 @@ int main(int argc, char **argv) {
     }
     else
     {
+    ROS_INFO("I don't see a ball :(\n");
       pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
     }  
     
