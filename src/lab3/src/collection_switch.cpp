@@ -14,6 +14,7 @@ lab3::fanboatControl controlMsg;
 
 bool ballMode = true;
 bool landmarkMode = false;
+bool latch = false;
 
 void irCallback(const lab2::range::ConstPtr& msg)
 {
@@ -22,7 +23,7 @@ void irCallback(const lab2::range::ConstPtr& msg)
 
 void ballCallback(const lab3::fanboatControl::ConstPtr& msg)
 {
-    if(ballMode)
+    if(ballMode && !latch)
     {
       controlMsg = *msg;
     }
@@ -31,7 +32,7 @@ void ballCallback(const lab3::fanboatControl::ConstPtr& msg)
 
 void landCallback(const lab3::fanboatControl::ConstPtr& msg)
 {
-    if(landmarkMode)
+    if(landmarkMode || latch)
     {
       controlMsg = *msg;
     }
@@ -63,6 +64,7 @@ int main(int argc, char **argv)
             
             landmarkMode = true;
             ballMode = false;
+            latch = true;
         }
         else
         {

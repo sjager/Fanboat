@@ -11,6 +11,9 @@ using lab3::fanboatControl;
 double turnSpeed;
 double forwardMagnitude;
 
+int HIGH_BOUND;
+int LOW_BOUND;
+
 fanboatControl pubControlMsg;
 fanboat_ll::fanboatLL IMUMsg;
 
@@ -44,7 +47,7 @@ float calculateDistance(float height) {
 
 bool betweenBounds(landmarkLocation msg)
 {
-    if(msg.xtop > 280 && msg.xtop < 360)
+    if(msg.xtop > LOW_BOUND && msg.xtop < HIGH_BOUND)
     {
         return true;
     }
@@ -60,7 +63,7 @@ void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
   //if(servoMode && !done) {
   if(servoMode) {  
     pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
-    ROS_INFO("TURN TO: %f",pubControlMsg.angle);
+    //ROS_INFO("TURN TO: %f",pubControlMsg.angle);
     
   } else {
     pubControlMsg.angle = IMUMsg.yaw;
@@ -69,6 +72,7 @@ void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
 }
 
 void locationCallback(const landmarkLocation::ConstPtr& msg) {
+  ROS_INFO("I see landmark");
   hasLandmark = true;
   location = *msg;
   distance = calculateDistance(location.height);
@@ -84,7 +88,7 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   }
   
   if(location.code == landmarkNumber) {
-    //ROS_INFO("\n\n-------- I FOUND IT --------");
+    ROS_INFO("\n\n-------- I FOUND IT --------");
     //ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
   
     consecutiveHits++;
@@ -103,9 +107,11 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
       done = false;
       ROS_INFO("\n----Keep Going!----\n");
     } else {
+      pubControlMsg.angle = IMUMsg.yaw;
       pubControlMsg.magnitude = 0.0;
+      pubControlMsg.ignoreAngle = true;
       //done = true;
-      //ROS_INFO("\n\n-------- DONE --------");
+      ROS_INFO("\n\n-------- DONE --------");
     }
         
   } else {
@@ -135,7 +141,7 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   }
   
   ROS_INFO("counter: %i", consecutiveHits);
-  hasLandmark = false;
+  
 }
 
 void printMode()
@@ -164,6 +170,9 @@ int main(int argc, char **argv) {
   n.getParam("consecutiveHitsThreshold", consecutiveHitsThreshold);
   n.getParam("hitsMax", hitsMax);
   
+  n.getParam("HIGH_BOUND", HIGH_BOUND);
+  n.getParam("LOW_BOUND", LOW_BOUND);
+  
   ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/follow/landmark", 1000);
   
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
@@ -184,6 +193,7 @@ int main(int argc, char **argv) {
     controlPub.publish(pubControlMsg);
     ros::spinOnce();
     loop_rate.sleep();
+    hasLandmark = false;
   }
 
   return 0;
