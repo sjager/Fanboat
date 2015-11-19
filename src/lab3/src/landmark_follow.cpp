@@ -40,6 +40,9 @@ int consecutiveHits = 0;
 int consecutiveHitsThreshold;
 int hitsMax;
 
+bool landmarkCentered = false;
+int landmarkPosition = 0;
+
 float calculateDistance(float height) {
   float dist = 145.86*pow(height, -0.993);
   return dist;
@@ -49,10 +52,17 @@ bool betweenBounds(landmarkLocation msg)
 {
     if(msg.xtop > LOW_BOUND && msg.xtop < HIGH_BOUND)
     {
+        landmarkPosition = 0;
         return true;
     }
-    else
+    else if(msg.xtop >= LOW_BOUND)
     {
+        landmarkPosition = -1;
+        return false;
+    }
+    else if(msg.xtop <= HIGH_BOUND)
+    {
+        landmarkPosition = 1;
         return false;
     }
 
@@ -67,7 +77,7 @@ void IMUinputCallback(const fanboat_ll::fanboatLL::ConstPtr& msg) {
     
   } else {
     pubControlMsg.angle = IMUMsg.yaw;
-    ROS_INFO("\n\n-------- DON'T SPIN --------");
+    //ROS_INFO("\n\n-------- DON'T SPIN --------");
   }
 }
 
@@ -88,9 +98,10 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   }
   
   if(location.code == landmarkNumber) {
+    //this is the right landmark
     ROS_INFO("\n\n-------- I FOUND IT --------");
-    //ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
-  
+    ROS_INFO("tgt:%i dist:%f, diff:%f",landmarkNumber, distance, diff);
+    ROS_INFO("centered: %i",landmarkCentered);
     consecutiveHits++;
   
     //fanboat should follow
@@ -100,13 +111,40 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     //stop rotating
     pubControlMsg.angle = IMUMsg.yaw;
     
-    if((diff > 0)) {
-
+    landmarkCentered = betweenBounds(location);
+    
+    //correct orientation
+    
+    if(!landmarkCentered)
+    {
+      if(landmarkPosition == 1)
+      {
+        //landmark is to the right;
+        ROS_INFO("-->");
+        pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
+        pubControlMsg.magnitude = 0;
+        pubControlMsg.ignoreAngle = false;
+      }
+      else if(landmarkPosition == -1)
+      {
+        ROS_INFO("<--");
+        //landmark is to the left;
+        pubControlMsg.angle = IMUMsg.yaw - turnSpeed;
+        pubControlMsg.magnitude = 0;
+        pubControlMsg.ignoreAngle = false;
+      }
+      ROS_INFO("X: %f", location.xtop);
+    }
+    
+    if((diff > 0) && landmarkCentered) {
+      // too far away
+      pubControlMsg.magnitude = IMUMsg.yaw;
       pubControlMsg.magnitude =  forwardMagnitude;
       pubControlMsg.ignoreAngle = true;
       done = false;
       ROS_INFO("\n----Keep Going!----\n");
-    } else {
+    } else if ((diff < 0) && landmarkCentered) {
+      // the fanboat is right where it needs to be
       pubControlMsg.angle = IMUMsg.yaw;
       pubControlMsg.magnitude = 0.0;
       pubControlMsg.ignoreAngle = true;
@@ -129,15 +167,16 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
     if(consecutiveHits >= consecutiveHitsThreshold)
     {
       ROS_INFO("ignore noise\n");
+      pubControlMsg.magnitude = IMUMsg.yaw;
+      pubControlMsg.magnitude =  forwardMagnitude;
+      pubControlMsg.ignoreAngle = true;
     }
-    if(consecutiveHits < consecutiveHitsThreshold)
+    else if(consecutiveHits < consecutiveHitsThreshold)
     {
-      //don't follow
+      //keep spinning
       servoMode = true;
       diff = 0;
-      pubControlMsg.magnitude = 0.12;
     }
-    
   }
   
   ROS_INFO("counter: %i", consecutiveHits);
@@ -186,10 +225,10 @@ int main(int argc, char **argv) {
     
     if(!hasLandmark)
     {
-      consecutiveHits = 0;
+      //consecutiveHits = 0;
       servoMode = true;
     }
-  
+    
     controlPub.publish(pubControlMsg);
     ros::spinOnce();
     loop_rate.sleep();

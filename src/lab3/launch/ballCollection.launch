@@ -34,7 +34,7 @@
   <param name="turnSpeed" value="30" />
   <param name="forwardMagnitude" value=".65" />
   
-  <param name="consecutiveHitsThreshold" value="5" />
+  <param name="consecutiveHitsThreshold" value="1" />
   <param name="hitsMax" value="15" />
   
   <param name="radiusThreshold" value="13"/>
