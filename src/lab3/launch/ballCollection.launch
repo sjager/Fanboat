@@ -9,7 +9,7 @@
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
   <node name="fanboat_interface_node" pkg="lab3" type="fanboat_interface_node" />
 
-  <node name="collection_switch_node" pkg="lab3" type="collection_switch_node" />
+  <node name="collection_switch_node" pkg="lab3" type="collection_switch_node" output="screen" />
 
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node">
     <param name="video_device" value="/dev/video0" />
@@ -25,8 +25,23 @@
     <remap from="image" to="/graphics_arbitrator/landmarkImage" />
   </node>
 
-  <node name="ball_follow_node" pkg="lab3" type="ball_follow_node"  output="screen"/>
+  <node name="ball_follow_node" pkg="lab3" type="ball_follow_node"/>
   <node name="landmark_follow_node" pkg="lab3" type="landmark_follow_node" />
+
+  <param name="landmarkNumber" value="80" />
+  <param name="targetDistance" value="1" />
+  
+  <param name="turnSpeed" value="30" />
+  <param name="forwardMagnitude" value=".65" />
+  
+  <param name="consecutiveHitsThreshold" value="5" />
+  <param name="hitsMax" value="15" />
+  
+  <param name="radiusThreshold" value="13"/>
+
+  <param name="radiusThreshold" value="13"/>
+  <param name="HIGH_BOUND" value="100"/>
+  <param name="LOW_BOUND" value="-100"/>
 
   <rosparam param="thresh/">
     high: {h: 64, s: 206, v: 154}

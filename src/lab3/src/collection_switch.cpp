@@ -12,6 +12,9 @@
 lab2::range irMsg;
 lab3::fanboatControl controlMsg;
 
+bool ballMode = true;
+bool landmarkMode = false;
+
 void irCallback(const lab2::range::ConstPtr& msg)
 {
     irMsg = *msg;
@@ -19,12 +22,19 @@ void irCallback(const lab2::range::ConstPtr& msg)
 
 void ballCallback(const lab3::fanboatControl::ConstPtr& msg)
 {
-    controlMsg = *msg;
+    if(ballMode)
+    {
+      controlMsg = *msg;
+    }
+    
 }
 
 void landCallback(const lab3::fanboatControl::ConstPtr& msg)
 {
-    controlMsg = *msg;
+    if(landmarkMode)
+    {
+      controlMsg = *msg;
+    }
 }
 
 int main(int argc, char **argv)
@@ -45,17 +55,23 @@ int main(int argc, char **argv)
         ROS_INFO("A: %f  B: %f", irMsg.a, irMsg.b);
         if(irMsg.a > THRESH || irMsg.b > THRESH)
         {
-            ROS_INFO("BALL");
+            ROS_INFO("BALL!!!!!");
             
             //We have captured a ball, so switch from ball detection to landmark
             n.setParam("detectBall", 0);
             n.setParam("detectLandmark", 1);
+            
+            landmarkMode = true;
+            ballMode = false;
         }
         else
         {
-            ROS_INFO("no ball");
+            ROS_INFO("no ball !!!!!!");
             n.setParam("detectBall", 1);
             n.setParam("detectLandmark", 0);
+            
+            ballMode = true;
+            landmarkMode = false;
         }
 
         controlPub.publish(controlMsg);
