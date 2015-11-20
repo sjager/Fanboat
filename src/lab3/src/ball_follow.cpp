@@ -163,14 +163,14 @@ int main(int argc, char **argv) {
         pubControlMsg.ignoreAngle = true;
       }
     }
-    else if(!seesBall && !done && (consecutiveHits <= 15))
+    else if(!seesBall && !done && (consecutiveHits <= consecutiveHitsThreshold))
     {
       //ROS_INFO("I don't see a ball :(");
       pubControlMsg.magnitude = 0;
       pubControlMsg.ignoreAngle = false;
       pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
     }
-    else if(!seesBall && !done && (consecutiveHits > 15))
+    else if(!seesBall && !done && (consecutiveHits > consecutiveHitsThreshold))
     {
       //the ball is probably in the catcher and not visible to the camera
         pubControlMsg.magnitude = forwardMagnitude;
