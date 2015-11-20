@@ -28,6 +28,7 @@ fanboat_ll::fanboatLL IMUMsg;
 metrics distanceMsg;
 landmarkLocation location;
 
+double speedFraction;
 float distance;
 int landmarkNumber;
 double targetDistance;
@@ -62,17 +63,17 @@ float calculateDistance(float height) {
 bool betweenBounds(landmarkLocation msg)
 {
 
-    if(msg.xtop > LOW_BOUND && msg.xtop < HIGH_BOUND)
+    if(msg.xtop > LOW_BOUND && msg.xtop < HIGH_BOUND) // landmark is centered
     {
         landmarkPosition = 0;
         return true;
     }
-    else if(msg.xtop >= LOW_BOUND)
+    else if(msg.xtop <= LOW_BOUND) //landmark is left of center
     {
         landmarkPosition = -1;
         return false;
     }
-    else if(msg.xtop <= HIGH_BOUND)
+    else if(msg.xtop >= HIGH_BOUND) //landmark is right of center
     {
         landmarkPosition = 1;
         return false;
@@ -97,10 +98,9 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   ROS_INFO("A Landmark");
   if(location.code == landmarkNumber)
   {
-    flipDirection = true;
     ROS_INFO("  Correct Landmark");
     landmarkCentered = betweenBounds(location);
-    if(landmarkCentered)
+    if(landmarkCentered == 0)
     {
       ROS_INFO("    Centered Landmark");
       if(diff > 0)
@@ -114,10 +114,12 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
       else
       {
         ROS_INFO("      At Landmark");
+        
         pubControlMsg.angle = IMUMsg.yaw;
         pubControlMsg.magnitude = 0;
         pubControlMsg.ignoreAngle = true;
         controlPub.publish(pubControlMsg);
+        while(1);
       }
     }
     else
@@ -126,16 +128,20 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
       //begin corrections
       if(landmarkPosition == 1)
       {
+        flipDirection = false;
+		// We need to turn right
         ROS_INFO("      --> Landmark: %i", location.xtop);
-        pubControlMsg.angle = IMUMsg.yaw - 3*turnSpeed/4;
+        pubControlMsg.angle = IMUMsg.yaw + speedFraction*turnSpeed;
         pubControlMsg.magnitude = 0;
         pubControlMsg.ignoreAngle = false;
         controlPub.publish(pubControlMsg);
       }
       else if(landmarkPosition == -1)
       {
+		// We need to turn left
+        flipDirection = true;
         ROS_INFO("      <-- Landmark: %i", location.xtop);
-        pubControlMsg.angle = IMUMsg.yaw + 3*turnSpeed/4;
+        pubControlMsg.angle = IMUMsg.yaw - speedFraction*turnSpeed;
         pubControlMsg.magnitude = 0;
         pubControlMsg.ignoreAngle = false;
         controlPub.publish(pubControlMsg);
@@ -146,10 +152,13 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   {
     ROS_INFO("  Incorrect Landmark");
     //turn half speed
-    pubControlMsg.angle = IMUMsg.yaw + 3*turnSpeed/4;
-    if(flipDirection)
+    if(!flipDirection)
     {
-      pubControlMsg.angle = IMUMsg.yaw - 3*turnSpeed/4;
+      pubControlMsg.angle = IMUMsg.yaw + turnSpeed*speedFraction;
+    } 
+    else
+    {
+      pubControlMsg.angle = IMUMsg.yaw - turnSpeed*speedFraction;
     }
     
     pubControlMsg.magnitude = 0;
@@ -165,6 +174,10 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "landmark_follow_node");
 
   ros::NodeHandle n;
+
+  //speedFraction = 1.0;
+
+  n.getParam("speedFraction", speedFraction);
 
   n.getParam("landmarkNumber", landmarkNumber);
   n.getParam("targetDistance", targetDistance);
@@ -193,11 +206,16 @@ int main(int argc, char **argv) {
     duration = ( std::clock() - timer ) / (double) CLOCKS_PER_SEC;
     elapsed += duration;
     
-    if(elapsed > 1)
+	// Only executed if the last landmark message was seen over a second ago.
+    if(elapsed > 0.25)
     {
-      pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
+      
       ROS_INFO("timer kick");
-      if(flipDirection)
+      if(!flipDirection)
+      {
+        pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
+      }
+      else
       {
         pubControlMsg.angle = IMUMsg.yaw - turnSpeed;
       }

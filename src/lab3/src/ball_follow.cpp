@@ -16,6 +16,7 @@ int LOW_BOUND;
 
 double turnSpeed;
 double forwardMagnitude;
+double speedFraction;
 
 fanboatControl pubControlMsg;
 fanboat_ll::fanboatLL IMUMsg;
@@ -101,6 +102,7 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
 
+  n.getParam("speedFraction", speedFraction);
   n.getParam("targetDistance", targetDistance);
   
   n.getParam("turnSpeed", turnSpeed);
@@ -138,7 +140,7 @@ int main(int argc, char **argv) {
         {
           // ball on left
           pubControlMsg.ignoreAngle = false;
-          pubControlMsg.angle = IMUMsg.yaw - turnSpeed;
+          pubControlMsg.angle = IMUMsg.yaw - turnSpeed * speedFraction;
           pubControlMsg.magnitude = 0;  
           ROS_INFO("<--");
         }
@@ -146,7 +148,7 @@ int main(int argc, char **argv) {
         {
           // ball on right
           pubControlMsg.ignoreAngle = false;
-          pubControlMsg.angle = IMUMsg.yaw + turnSpeed;
+          pubControlMsg.angle = IMUMsg.yaw + turnSpeed * speedFraction;
           pubControlMsg.magnitude = 0;
           ROS_INFO("-->");
         }
@@ -163,14 +165,14 @@ int main(int argc, char **argv) {
         pubControlMsg.ignoreAngle = true;
       }
     }
-    else if(!seesBall && !done && (consecutiveHits <= consecutiveHitsThreshold))
+    else if(!seesBall && !done && (consecutiveHits <= 15)) //was consecutiveHitsThreshold
     {
       //ROS_INFO("I don't see a ball :(");
       pubControlMsg.magnitude = 0;
       pubControlMsg.ignoreAngle = false;
       pubControlMsg.angle = turnSpeed + IMUMsg.yaw;
     }
-    else if(!seesBall && !done && (consecutiveHits > consecutiveHitsThreshold))
+    else if(!seesBall && !done && (consecutiveHits > 15)) //was consecutiveHitsThreshold
     {
       //the ball is probably in the catcher and not visible to the camera
         pubControlMsg.magnitude = forwardMagnitude;
