@@ -29,19 +29,19 @@
   <node name="landmark_follow_node" pkg="lab3" type="landmark_follow_node" output="screen"/>
 
   <param name="landmarkNumber" value="80" />
-  <param name="targetDistance" value="1" />
+  <param name="targetDistance" value="0.5" />
   
-  <param name="turnSpeed" value="30" />
-  <param name="forwardMagnitude" value=".65" />
+  <param name="turnSpeed" value="35" />
+  <param name="forwardMagnitude" value=".7" />
   
-  <param name="consecutiveHitsThreshold" value="1" />
+  <param name="consecutiveHitsThreshold" value="3" />
   <param name="hitsMax" value="15" />
   
   <param name="radiusThreshold" value="13"/>
 
   <param name="radiusThreshold" value="13"/>
-  <param name="HIGH_BOUND" value="100"/>
-  <param name="LOW_BOUND" value="-100"/>
+  <param name="HIGH_BOUND" value="250"/>
+  <param name="LOW_BOUND" value="-250"/>
 
   <rosparam param="thresh/">
     high: {h: 64, s: 206, v: 154}
