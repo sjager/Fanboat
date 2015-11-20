@@ -3,13 +3,13 @@
   (:export
    "<TOGGLE>"
    "TOGGLE"
-   "<MAGNITUDE>"
-   "MAGNITUDE"
-   "<RANGE>"
-   "RANGE"
-   "<MUX_CONTROL>"
-   "MUX_CONTROL"
    "<ANGLE>"
    "ANGLE"
+   "<MAGNITUDE>"
+   "MAGNITUDE"
+   "<MUX_CONTROL>"
+   "MUX_CONTROL"
+   "<RANGE>"
+   "RANGE"
   ))
 

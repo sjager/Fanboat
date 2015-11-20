@@ -1,0 +1,42 @@
+<launch>
+  <node name="graphics_arbitrator_node" pkg="lab3" type="graphics_arbitrator_node" output="screen" />
+  <param name="detectBall" value="0" />
+  <param name="detectLandmark" value="0" />
+
+  <node launch-prefix="nice" name="usb_cam" pkg="usb_cam" type="usb_cam_node">
+    <param name="video_device" value="/dev/video0" />
+    <!--param name="image_width" value="320" />
+    <param name="image_height" value="240" /-->
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+  
+  <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector">
+    <remap from="image" to="/graphics_arbitrator/landmarkImage"/>
+  </node>
+
+  <node name="fanboat_interface_node" pkg="lab3" type="fanboat_interface_node"/>
+
+  <node name="landmark_follow_node" pkg="lab3" type="landmark_follow_node" output="screen"> 
+  </node>
+  <param name="landmarkNumber" value="80" />
+  <param name="targetDistance" value="1" />
+  
+  <param name="turnSpeed" value="45" />
+  <param name="forwardMagnitude" value=".65" />
+  
+  <param name="consecutiveHitsThreshold" value="5" />
+  <param name="hitsMax" value="15" />
+
+  <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
+  <param name="pParam" value="0.03" />  
+  <param name="dParam" value="0.05" />
+  <param name="iParam" value="0.0" />
+
+  <node name="mixer_node" pkg="lab2" type="mixer_node" />
+  <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
+  
+</launch>

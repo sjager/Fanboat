@@ -16,7 +16,12 @@
     :reader magnitude
     :initarg :magnitude
     :type cl:float
-    :initform 0.0))
+    :initform 0.0)
+   (ignoreAngle
+    :reader ignoreAngle
+    :initarg :ignoreAngle
+    :type cl:boolean
+    :initform cl:nil))
 )
 
 (cl:defclass magnitude (<magnitude>)
@@ -36,6 +41,11 @@
 (cl:defmethod magnitude-val ((m <magnitude>))
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader lab2-msg:magnitude-val is deprecated.  Use lab2-msg:magnitude instead.")
   (magnitude m))
+
+(cl:ensure-generic-function 'ignoreAngle-val :lambda-list '(m))
+(cl:defmethod ignoreAngle-val ((m <magnitude>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader lab2-msg:ignoreAngle-val is deprecated.  Use lab2-msg:ignoreAngle instead.")
+  (ignoreAngle m))
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <magnitude>) ostream)
   "Serializes a message object of type '<magnitude>"
   (roslisp-msg-protocol:serialize (cl:slot-value msg 'header) ostream)
@@ -48,6 +58,7 @@
     (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream))
+  (cl:write-byte (cl:ldb (cl:byte 8 0) (cl:if (cl:slot-value msg 'ignoreAngle) 1 0)) ostream)
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <magnitude>) istream)
   "Deserializes a message object of type '<magnitude>"
@@ -62,6 +73,7 @@
       (cl:setf (cl:ldb (cl:byte 8 48) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 56) bits) (cl:read-byte istream))
     (cl:setf (cl:slot-value msg 'magnitude) (roslisp-utils:decode-double-float-bits bits)))
+    (cl:setf (cl:slot-value msg 'ignoreAngle) (cl:not (cl:zerop (cl:read-byte istream))))
   msg
 )
 (cl:defmethod roslisp-msg-protocol:ros-datatype ((msg (cl:eql '<magnitude>)))
@@ -72,24 +84,26 @@
   "lab2/magnitude")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<magnitude>)))
   "Returns md5sum for a message object of type '<magnitude>"
-  "5abe66de36ab14d7d6aa08d9f6bfc02c")
+  "a7bd81ea64281cc8cf9890fe81e13e44")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'magnitude)))
   "Returns md5sum for a message object of type 'magnitude"
-  "5abe66de36ab14d7d6aa08d9f6bfc02c")
+  "a7bd81ea64281cc8cf9890fe81e13e44")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<magnitude>)))
   "Returns full string definition for message of type '<magnitude>"
-  (cl:format cl:nil "Header header~%~%#Pitch roll and yaw in degrees~%float64 magnitude ~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
+  (cl:format cl:nil "Header header~%~%#Pitch roll and yaw in degrees~%float64 magnitude~%bool ignoreAngle~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'magnitude)))
   "Returns full string definition for message of type 'magnitude"
-  (cl:format cl:nil "Header header~%~%#Pitch roll and yaw in degrees~%float64 magnitude ~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
+  (cl:format cl:nil "Header header~%~%#Pitch roll and yaw in degrees~%float64 magnitude~%bool ignoreAngle~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <magnitude>))
   (cl:+ 0
      (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'header))
      8
+     1
 ))
 (cl:defmethod roslisp-msg-protocol:ros-message-to-list ((msg <magnitude>))
   "Converts a ROS message object to a list"
   (cl:list 'magnitude
     (cl:cons ':header (header msg))
     (cl:cons ':magnitude (magnitude msg))
+    (cl:cons ':ignoreAngle (ignoreAngle msg))
 ))
