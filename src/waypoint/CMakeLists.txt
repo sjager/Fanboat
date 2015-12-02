@@ -3,20 +3,21 @@ project(waypoint)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rospy
   std_msgs
+  message_generation
 )
 
-#add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  arduinoAngle.msg
+  fanboatInfo.msg
+ )
 
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -25,10 +26,13 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-#add_executable(graphics_arbitrator_node src/graphics_arbitrator.cpp)
-#add_dependencies(graphics_arbitrator_node lab3_generate_messages_cpp)
-#target_link_libraries(graphics_arbitrator_node ${catkin_LIBRARIES})
+## Declare a C++ executable
+add_executable(arduino_sweep_node src/arduino_sweep.cpp)
+add_dependencies(arduino_sweep_node waypoint_generate_messages_cpp)
+target_link_libraries(arduino_sweep_node ${catkin_LIBRARIES})

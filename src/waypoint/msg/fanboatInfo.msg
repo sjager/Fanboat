@@ -2,13 +2,13 @@ Header header
 
 float32 tgtAngle
 float32 tgtMagnitude
-int tgtLandmark
+int32 tgtLandmark
 float32 tgtDistance
 
 float32 curAngle
 float32 curMagnitude
 bool ignoreAngle
-int curLandmark
+int32 curLandmark
 float32 curDistance
 
 float32 motorR
