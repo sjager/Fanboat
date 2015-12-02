@@ -4,8 +4,7 @@ import serial
 import sys
 import rospy
 from std_msgs.msg import UInt8
-from fanboat_ll.msg import fanboatLL
-from fanboat_ll.msg import fanboatMotors
+from waypoint.msg import arduinoAngle
 
 class TheNode(object):
   '''Class to communicate with the fanboat. Carrick Detweiler 2015'''
@@ -15,6 +14,18 @@ class TheNode(object):
      #c = ord(self.port.read())
      #self.checksum = (self.checksum + c) & 0xff
      #return c
+  def handleServoAngle(self,servoAngle):
+    #bound check
+    targetAngle = min(max(servoAngle.camAngle,0),360)
+
+    #Convert to ints
+    targetAngle = int(targetAngle)
+
+    print(targetAngle)
+
+    #Start byte
+    self.port.write(chr(targetAngle))
+    self.port.write('\n')
 
   def __init__(self):
 
@@ -25,22 +36,7 @@ class TheNode(object):
     baud = 9600
 
     self.port = serial.Serial(port=port_file, baudrate=baud)
-    self.publisher = rospy.Publisher('fanboatLL', fanboatLL, queue_size=10)
-    rospy.Subscriber("servoAngle",)
-
-	
-  def handleFanboatMotors(self,motors):
-    #bound check
-    left = min(max(motors.left,0),360)
-
-    #Convert to ints
-    left = int(left)
-
-    print(left)
-
-    #Start byte
-    self.port.write(int(left))
-    self.port.write('\n')
+    rospy.Subscriber("servoAngle",arduinoAngle,self.handleServoAngle)
 
   def main_loop(self):
     '''main loop get a packet from the port and parse it and publish it'''
@@ -73,9 +69,6 @@ class TheNode(object):
       if c != self.checksum:
         print "Error, invalid checksum"
         continue
-
-      #Publish
-      self.publisher.publish(msg)
       
       r.sleep()
       

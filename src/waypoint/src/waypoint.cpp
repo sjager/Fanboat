@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
     ros::NodeHandle n;
 
-    controlPub = n.advertise<lab3::fanboatControl>("/waypoint/control", 1000);
+    ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/waypoint/control", 1000);
     
     ros::Subscriber searchSub = n.subscribe("/state/search", 1000, searchCallback);
     ros::Subscriber pursueSub = n.subscribe("/state/pursue", 1000, pursueCallback);
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
                 ROS_INFO("state undetermined");
         }
         
-        controlpub.publish(finalControlMsg);
+        controlPub.publish(finalControlMsg);
         ros::spinOnce();
         loop_rate.sleep();
     }

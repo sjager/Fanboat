@@ -3,13 +3,16 @@ Header header
 float32 tgtAngle
 float32 tgtMagnitude
 int32 tgtLandmark
-float32 tgtDistance
+float32 tgtCamDistance
+float32 tgtIrDistance
 
 float32 curAngle
 float32 curMagnitude
 bool ignoreAngle
+
 int32 curLandmark
-float32 curDistance
+float32 curCamDistance
+float32 curIrDistance
 
 float32 motorR
 float32 motorL

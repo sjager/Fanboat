@@ -14,13 +14,15 @@ int main(int argc, char **argv) {
   ros::Rate loop_rate(15);
 
   while(ros::ok()) {
+    if(angleMessage.camAngle >= 360) {increase = false;}
+	if(angleMessage.camAngle <= 0) {increase = true;}
+
 	if(increase) {
       angleMessage.camAngle = (iterator++);
 	} else {
 	  angleMessage.camAngle = (iterator--);
 	} 
-	if(angleMessage.camAngle >= 360) {increase = false;}
-	if(angleMessage.camAngle <= 0) {increase = true;}
+	
 	anglePub.publish(angleMessage);
     ros::spinOnce();
     loop_rate.sleep();
