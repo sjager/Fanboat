@@ -5,12 +5,14 @@
 #include <string.h>
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
+#include <waypoint/fanboatInfo.h>
 
 #define SEARCH 1
 #define PURSUE 2
 #define AVOID  3
 
 using lab3::fanboatControl;
+using waypoint::fanboatInfo;
 
 // identifies what the current state is
 int currentState;
@@ -19,9 +21,12 @@ fanboatControl searchMsg;
 fanboatControl pursueMsg;
 fanboatControl avoidMsg;
 
+fanboatInfo infoMsg;
+
 // the message that gets selected among the three state nodes to be published
 fanboatControl finalControlMsg;
 
+// state node callbacks
 void searchCallback(const lab3::fanboatControl::ConstPtr& msg) {
     searchMsg = *msg;
 }
@@ -34,8 +39,14 @@ void avoidCallback(const lab3::fanboatControl::ConstPtr& msg) {
     avoidMsg = *msg;
 }
 
-void determineState()
-{
+
+// fanboatInfo callback
+void infoCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
+    infoMsg = *msg;
+}
+
+
+void determineState() {
     // DO STATE LOGIC RIGHT HURR
     // currentState = lalala
 }
@@ -51,6 +62,8 @@ int main(int argc, char **argv) {
     ros::Subscriber searchSub = n.subscribe("/state/search", 1000, searchCallback);
     ros::Subscriber pursueSub = n.subscribe("/state/pursue", 1000, pursueCallback);
     ros::Subscriber avoidSub  = n.subscribe("/state/avoid" , 1000, avoidCallback);
+
+    ros::Subscriber fanboatInfoSub = n.subscribe("/fanboatInfo", 1000, infoCallback);
 
     ros::Rate loop_rate(8);
 
