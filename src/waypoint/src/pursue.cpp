@@ -10,21 +10,47 @@ using lab3::fanboatControl;
 
 fanboatControl controlMsg;
 
+fanboatInfo infoMsg;
+
+// fanboatInfo callback
+void infoCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
+    infoMsg = *msg;
+}
+
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "pursue_state_node");
+    ros::init(argc, argv, "pursue_state_node");
 
-  ros::NodeHandle n;
+    ros::NodeHandle n;
 
-  ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/state/pursue", 1000);
+    ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/state/pursue", 1000);
+    ros::Subscriber fanboatInfoSub = n.subscribe("/fanboatInfo", 1000, infoCallback);
+
   
-  ros::Rate loop_rate(8);
+    ros::Rate loop_rate(8);
 
-  while(ros::ok()) {
+    while(ros::ok()) {
 
-    controlPub.publish(controlMsg);
-    ros::spinOnce();
-    loop_rate.sleep();
-  }
+        if(infoMsg.curCamDistance>infoMsg.tgtCamDistance)
+        {
+            //drive forward; increase magnitude
+            controlMsg.magnitude = infoMsg.tgtMagnitude;
+        }
 
-  return 0;
+        //Should this node even worry about angles?
+        if(infoMsg.tgtAngle!=infoMsg.curAngle)
+        {
+            controlMsg.angle = infoMsg.tgtAngle;
+            controlMsg.ignoreAngle = false;
+        }
+        else
+        {
+            controlMsg.ignoreAngle = true;
+        }
+
+        controlPub.publish(controlMsg);
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+
+    return 0;
 }
