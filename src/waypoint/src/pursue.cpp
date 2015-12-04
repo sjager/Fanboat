@@ -5,8 +5,10 @@
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
 #include <lab3/fanboatControl.h>
+#include <waypoint/fanboatInfo.h>
 
 using lab3::fanboatControl;
+using waypoint::fanboatInfo;
 
 fanboatControl controlMsg;
 
