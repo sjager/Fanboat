@@ -3,7 +3,7 @@ import struct
 import serial
 import sys
 import rospy
-from std_msgs.msg import UInt8
+from std_msgs.msg import UInt16
 from waypoint.msg import arduinoAngle
 
 class TheNode(object):
@@ -19,13 +19,14 @@ class TheNode(object):
     targetAngle = min(max(servoAngle.camAngle,0),360)
 
     #Convert to ints
-    targetAngle = int(targetAngle)
+    targetAngle = int(targetAngle / 2);
 
-    print(targetAngle)
+    #print(targetAngle)
 
     #Start byte
     self.port.write(chr(targetAngle))
-    self.port.write('\n')
+    #self.port.write('\n')
+    print(chr(targetAngle))
 
   def __init__(self):
 
@@ -45,18 +46,18 @@ class TheNode(object):
     # Publish each byte as it comes in
     while not rospy.is_shutdown():
       # Wait for the start bytes 'CD'
+      c = self.port.readline()
+      #while c != 'C':
       c = self.port.read()
-      while c != 'C':
-        c = self.port.read()
-        print("resync got"),
-        print(ord(c)),
-        print(c)
-      c = self.port.read()
-      if c != 'D':
-        print("resync2 got"),
-        print(ord(c)),
-        print(c)
-        continue
+      print("data back: "),
+      #print(ord(c)),
+      print(c)
+      #c = self.port.read()
+      #if c != 'D':
+      #  print("resync2 got"),
+      #  print(ord(c)),
+      #  print(c)
+      #  continue
 
       #Init the checksum
       self.checksum = 0xCD
@@ -65,10 +66,10 @@ class TheNode(object):
       #msg.rightMotorSetting = self.readOneByteAndChecksum()
 
       #verify the checksum
-      c = ord(self.port.read())
-      if c != self.checksum:
-        print "Error, invalid checksum"
-        continue
+      #c = ord(self.port.read())
+      #if c != self.checksum:
+      #  print "Error, invalid checksum"
+      #  continue
       
       r.sleep()
       

@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
   ros::Publisher anglePub = n.advertise<waypoint::arduinoAngle>("servoAngle", 1000);
   bool increase = true;
   int iterator = 0;
+  int step = 1;
   ros::Rate loop_rate(15);
 
   while(ros::ok()) {
@@ -18,9 +19,11 @@ int main(int argc, char **argv) {
 	if(angleMessage.camAngle <= 0) {increase = true;}
 
 	if(increase) {
-      angleMessage.camAngle = (iterator++);
+      iterator = iterator + step;
+      angleMessage.camAngle = iterator;
 	} else {
-	  angleMessage.camAngle = (iterator--);
+	  iterator = iterator - step;
+	  angleMessage.camAngle = iterator;
 	} 
 	
 	anglePub.publish(angleMessage);
