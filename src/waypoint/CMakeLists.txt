@@ -47,3 +47,7 @@ add_executable(avoid_state_node src/avoid.cpp)
 add_dependencies(avoid_state_node waypoint_generate_messages_cpp)
 target_link_libraries(avoid_state_node ${catkin_LIBRARIES})
 
+add_executable(fanboat_info_node src/fanboat_info.cpp)
+add_dependencies(fanboat_info_node waypoint_generate_messages_cpp)
+target_link_libraries(fanboat_info_node ${catkin_LIBRARIES})
+
