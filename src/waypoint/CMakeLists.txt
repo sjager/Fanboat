@@ -9,8 +9,9 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 add_message_files(
-   FILES
-   fanboatInfo.msg
+  FILES
+  fanboatInfo.msg
+  landmarkInfo.msg 
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -50,4 +51,8 @@ target_link_libraries(avoid_state_node ${catkin_LIBRARIES})
 add_executable(fanboat_info_node src/fanboat_info.cpp)
 add_dependencies(fanboat_info_node waypoint_generate_messages_cpp)
 target_link_libraries(fanboat_info_node ${catkin_LIBRARIES})
+
+add_executable(landmark_info_node src/landmark_info.cpp)
+add_dependencies(landmark_info_node waypoint_generate_messages_cpp)
+target_link_libraries(landmark_info_node ${catkin_LIBRARIES})
 
