@@ -6,6 +6,8 @@
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
 #include <waypoint/fanboatInfo.h>
+#include <vector>
+#include <iterator>
 
 #define SEARCH 1
 #define PURSUE 2
@@ -13,6 +15,9 @@
 
 using lab3::fanboatControl;
 using waypoint::fanboatInfo;
+
+std::vector<int> waypoints;
+int currentWaypointIndex;
 
 // identifies what the current state is
 int currentState;
@@ -82,6 +87,17 @@ int main(int argc, char **argv) {
     ros::Subscriber avoidSub  = n.subscribe("/state/avoid" , 1000, avoidCallback);
 
     ros::Subscriber fanboatInfoSub = n.subscribe("/fanboatInfo", 1000, infoCallback);
+
+    n.getParam("waypoints", waypoints);
+    if(waypoints.size() < 1) return -1;
+
+    currentWaypointIndex = 0;
+    ROS_INFO("WAYPOINTS:");
+    ROS_INFO("Size: %d", (int)waypoints.size());
+    for (; currentWaypointIndex < waypoints.size(); currentWaypointIndex++)
+    {
+      ROS_INFO("%d", waypoints.at(currentWaypointIndex));
+    }
 
     ros::Rate loop_rate(8);
 
