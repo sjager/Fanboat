@@ -1,11 +1,13 @@
 #include <ros/ros.h>
 #include <lab2/angle.h>
 #include <lab2/magnitude.h>
+#include <lab2/range.h>
 #include <lab3/fanboatControl.h>
 #include <string.h>
 #include <fanboat_ll/fanboatLL.h>
 #include <fanboat_ll/fanboatMotors.h>
 #include <waypoint/fanboatInfo.h>
+#include <waypoint/landmarkInfo.h>
 #include <landmark_self_sim/landmarkLocation.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Int32.h>
@@ -14,6 +16,7 @@
 using std_msgs::Float32;
 using std_msgs::Int32;
 using waypoint::fanboatInfo;
+using waypoint::landmarkInfo;
 using lab3::fanboatControl;
 using fanboat_ll::fanboatLL;
 using fanboat_ll::fanboatMotors;
@@ -28,9 +31,8 @@ fanboatControl controlMsg;
 Int32 tgtLandmarkMsg;
 fanboatLL IMUMsg;
 fanboatMotors motorMsg;
-landmarkLocation landmarkLocationMsg;
 range IRMsg;
-
+landmarkInfo landmarkInfoMsg;
 void controlCallback(const lab3::fanboatControl::ConstPtr& msg) {
     controlMsg = *msg; 
 }
@@ -47,15 +49,10 @@ void motorCallback(const fanboat_ll::fanboatMotors::ConstPtr& msg) {
     motorMsg = *msg;
 }
 
-
-//TODO: landmark info callback
-/*
-void landmarkCallback(const landmark_self_sim::landmarkLocation::ConstPtr& msg) {
-    landmarkLocationMsg = *msg;
-    
-    curLandmark = landmarkLocationMsg.code;
+void landmarkCallback(const waypoint::landmarkInfo::ConstPtr& msg) {
+    landmarkInfoMsg = *msg;
 }
-*/
+
 
 void IRCallback(const lab2::range::ConstPtr& msg) {
     IRMsg = *msg;
@@ -84,14 +81,9 @@ int main(int argc, char **argv) {
     ros::Subscriber IMUSub = n.subscribe("/fanboatLL", 1000, IMUCallback);
     
     ros::Subscriber motorSub = n.subscribe("/motors", 1000, motorCallback);
+    ros::Subscriber landmarkSub = n.subscribe("/landmarkInfo", 1000, landmarkCallback);
     
-    //TODO: subscribe to the right landmark topic 
-    
-    /*
-    ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, landmarkCallback);
-    */
-    
-    ros::Subscriber IRSub = n.subscribe("/ir_range, 1000, IRCallback);
+    ros::Subscriber IRSub = n.subscribe("/ir_range", 1000, IRCallback);
     
     
     //ros::Subscriber cameraSub = n.subscribe("/waypoint/control", 1000, cameraCallback);
@@ -117,8 +109,8 @@ int main(int argc, char **argv) {
         //fbInfo.tgtCamDistance
         //fbInfo.tgtIrDistance
         
-        //fbInfo.curLandmark
-        //fbInfo.curCamDistance
+        fbInfo.curLandmark = landmarkInfoMsg.id;
+        fbInfo.curCamDistance = landmarkInfoMsg.distance;
         //fbInfo.curIrDistance
         
         //TODO: These might be backwards. Double check IR a and b vs L and R
