@@ -6,11 +6,14 @@
 #include <fanboat_ll/fanboatMotors.h>
 #include <lab3/fanboatControl.h>
 #include <waypoint/fanboatInfo.h>
+#include <math.h>
 
 using lab3::fanboatControl;
 using waypoint::fanboatInfo;
 
 fanboatControl controlMsg;
+
+double forwardMag = 0;
 
 fanboatInfo infoMsg;
 
@@ -30,24 +33,18 @@ int main(int argc, char **argv) {
   
     ros::Rate loop_rate(8);
 
+	n.getParam("forwardMagnitude", forwardMag);
+
     while(ros::ok()) {
 
-        if(infoMsg.curCamDistance>infoMsg.tgtCamDistance)
-        {
-            //drive forward; increase magnitude
-            controlMsg.magnitude = infoMsg.tgtMagnitude;
-        }
-
-        //Should this node even worry about angles?
-        if(infoMsg.tgtAngle!=infoMsg.curAngle)
-        {
-            controlMsg.angle = infoMsg.tgtAngle;
-            controlMsg.ignoreAngle = false;
-        }
-        else
-        {
-            controlMsg.ignoreAngle = true;
-        }
+        //Turn to face the right way
+		if(infoMsg.camAngle > 10) {
+	        controlMsg.angle = fmod((infoMsg.curAngle + infoMsg.camAngle),360);
+	        controlMsg.ignoreAngle = false;
+	    } else {
+	        controlMsg.ignoreAngle = true;
+			controlMsg.magnitude = forwardMag;
+	    }
 
         controlPub.publish(controlMsg);
         ros::spinOnce();
