@@ -3,6 +3,7 @@ project(waypoint)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rospy
   std_msgs
   sensor_msgs
   message_generation
@@ -11,14 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   fanboatInfo.msg
-  landmarkInfo.msg 
+  landmarkInfo.msg
+  arduinoAngle.msg
 )
 
-## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  sensor_msgs
   std_msgs
+  sensor_msgs
 )
 
 catkin_package(
@@ -28,9 +29,19 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+## Declare a C++ executable
+add_executable(arduino_sweep_node src/arduino_sweep.cpp)
+add_dependencies(arduino_sweep_node waypoint_generate_messages_cpp)
+target_link_libraries(arduino_sweep_node ${catkin_LIBRARIES})
+
+add_executable(arduino_search_node src/arduino_search.cpp)
+add_dependencies(arduino_search_node waypoint_generate_messages_cpp)
+target_link_libraries(arduino_search_node ${catkin_LIBRARIES})
 
 add_executable(waypoint_node src/waypoint.cpp)
 add_dependencies(waypoint_node waypoint_generate_messages_cpp)
