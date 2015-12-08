@@ -48,6 +48,7 @@ void codeCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
   if(targetCode != msg->tgtLandmark) {
 	targetCode = msg->tgtLandmark;
 	step = BIG_STEP;
+  }
 }
 
 int main(int argc, char **argv) {
