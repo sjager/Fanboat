@@ -53,7 +53,6 @@ void landmarkCallback(const waypoint::landmarkInfo::ConstPtr& msg) {
     landmarkInfoMsg = *msg;
 }
 
-
 void IRCallback(const lab2::range::ConstPtr& msg) {
     IRMsg = *msg;
 }
@@ -71,6 +70,19 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "fanboat_info_node");
 
     ros::NodeHandle n;
+
+
+    double tgtCD;
+    double tgtID;
+    
+    n.getParam("target_cam_distance", tgtCD);
+    n.getParam("target_IR_distance", tgtID);
+ 
+    fbInfo.tgtCamDistance = (float) tgtCD;
+    fbInfo.tgtIrDistance = (float) tgtID;
+ 
+    //TODO: get rid of this for non-debugging
+    fbInfo.tgtLandmark = 68;
 
     ros::Publisher infoPub = n.advertise<waypoint::fanboatInfo>("/fanboatInfo", 1000);
     
@@ -106,12 +118,11 @@ int main(int argc, char **argv) {
         
         //TODO: get all of these
            
-        //fbInfo.tgtCamDistance
-        //fbInfo.tgtIrDistance
+        fbInfo.tgtCamDistance; //this comes from launch
+        fbInfo.tgtIrDistance;  //this comes from launch
         
         fbInfo.curLandmark = landmarkInfoMsg.id;
         fbInfo.curCamDistance = landmarkInfoMsg.distance;
-        //fbInfo.curIrDistance
         
         //TODO: These might be backwards. Double check IR a and b vs L and R
         fbInfo.IRLDist = IRMsg.a;
