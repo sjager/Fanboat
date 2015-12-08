@@ -7,7 +7,6 @@ float32 tgtCamDistance
 float32 tgtIrDistance
 
 float32 curAngle
-float32 curMagnitude
 bool ignoreAngle
 
 int32 curLandmark
