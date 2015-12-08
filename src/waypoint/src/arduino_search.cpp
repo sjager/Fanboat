@@ -1,24 +1,33 @@
+//Import needed messages and stuff
 #include <ros/ros.h>
 #include <waypoint/arduinoAngle.h>
 #include <landmark_self_sim/landmarkLocation.h>
+#include <waypoint/fanboatInfo.h>
 waypoint::arduinoAngle angleMessage;
 
 using landmark_self_sim::landmarkLocation;
 
+//Set up some global variables
 landmarkLocation location;
 
 bool increase = true;
 double iterator = 0;
 double step = 2.0;
 int targetCode = 68;
+
+//Set up some things that should be constants
 int HIGH_BOUND = 370;
 int LOW_BOUND = 270;
+int BIG_STEP = 2;
+double SMALL_STEP = 1.0;
 
+
+//Function 
 void locationCallback(const landmarkLocation::ConstPtr& msg) {
   location = *msg;
   //ROS_INFO("Found something");
   if(location.code == -1 || location.code == targetCode) {
-    step = 1;
+    step = SMALL_STEP;
     if(location.code == targetCode) {
 	  //ROS_INFO("Found it");
 	  if(location.xtop > HIGH_BOUND) {
@@ -35,13 +44,20 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
   }
 } 
 
+void codeCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
+  if(targetCode != msg->tgtLandmark) {
+	targetCode = msg->tgtLandmark;
+	step = BIG_STEP;
+}
+
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "arduinoSweepNode");
+  ros::init(argc, argv, "arduinoSearchNode");
   
   ros::NodeHandle n;
   
   ros::Publisher anglePub = n.advertise<waypoint::arduinoAngle>("servoAngle", 1000);
   ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
+  ros::Subscriber fanboatInfo = n.subscribe("/fanboatInfo", 10, codeCallback);
   ros::Rate loop_rate(10);
   while(ros::ok()) {
     if(angleMessage.camAngle >= 360) {increase = false;}
