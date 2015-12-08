@@ -14,6 +14,7 @@
 using std_msgs::Float32;
 using std_msgs::Int32;
 using waypoint::fanboatInfo;
+using waypoint::landmarkInfo
 using lab3::fanboatControl;
 using fanboat_ll::fanboatLL;
 using fanboat_ll::fanboatMotors;
@@ -27,7 +28,7 @@ fanboatControl controlMsg;
 Int32 tgtLandmarkMsg;
 fanboatLL IMUMsg;
 fanboatMotors motorMsg;
-landmarkLocation landmarkLocationMsg;
+landmarkInfo landmarkInfoMsg;
 
 void controlCallback(const lab3::fanboatControl::ConstPtr& msg) {
     controlMsg = *msg; 
@@ -45,15 +46,10 @@ void motorCallback(const fanboat_ll::fanboatMotors::ConstPtr& msg) {
     motorMsg = *msg;
 }
 
-
-//TODO: landmark info callback
-/*
-void landmarkCallback(const landmark_self_sim::landmarkLocation::ConstPtr& msg) {
-    landmarkLocationMsg = *msg;
-    
-    curLandmark = landmarkLocationMsg.code;
+void landmarkCallback(const waypoint::landmarkInfo::ConstPtr& msg) {
+    landmarkInfo = *msg;
 }
-*/
+
 
 //TODO: IR callback
 
@@ -80,10 +76,7 @@ int main(int argc, char **argv) {
     
     ros::Subscriber motorSub = n.subscribe("/motors", 1000, motorCallback);
     
-    //TODO: subscribe to the right landmark topic 
-    
-    /*
-    ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, landmarkCallback);
+    ros::Subscriber landmarkSub = n.subscribe("/landmarkInfo", 1000, landmarkCallback);
     
     //TODO: subscribe to the right IR topic
     
@@ -113,8 +106,8 @@ int main(int argc, char **argv) {
         //fbInfo.tgtCamDistance
         //fbInfo.tgtIrDistance
         
-        //fbInfo.curLandmark
-        //fbInfo.curCamDistance
+        fbInfo.curLandmark = landmarkInfo.id;
+        fbInfo.curCamDistance = landmarkInfo.distance;
         //fbInfo.curIrDistance
         //fbInfo.IRL
         //fbInfo.IRR
