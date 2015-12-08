@@ -5,10 +5,10 @@
    "TOGGLE"
    "<ANGLE>"
    "ANGLE"
-   "<MAGNITUDE>"
-   "MAGNITUDE"
    "<MUX_CONTROL>"
    "MUX_CONTROL"
+   "<MAGNITUDE>"
+   "MAGNITUDE"
    "<RANGE>"
    "RANGE"
   ))

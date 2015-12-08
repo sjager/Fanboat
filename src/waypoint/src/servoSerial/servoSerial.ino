@@ -20,10 +20,11 @@ void loop()
   while (Serial.available() > 0) {
     dataIn = Serial.read();
     val = int(dataIn);
-    Serial.println(val, DEC);
-    val = constrain(val, 0, 180);
+    //Serial.println(val, DEC);
+    val = constrain(val, 0, 360);
   }
   servo1.write(val);
+  servo2.write(val);
 //  if((val%2) == 0) {
 //    servo2.write(ang);
 //  } else {

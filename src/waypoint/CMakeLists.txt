@@ -38,6 +38,10 @@ add_executable(arduino_sweep_node src/arduino_sweep.cpp)
 add_dependencies(arduino_sweep_node waypoint_generate_messages_cpp)
 target_link_libraries(arduino_sweep_node ${catkin_LIBRARIES})
 
+add_executable(arduino_search_node src/arduino_search.cpp)
+add_dependencies(arduino_search_node waypoint_generate_messages_cpp)
+target_link_libraries(arduino_search_node ${catkin_LIBRARIES})
+
 add_executable(waypoint_node src/waypoint.cpp)
 add_dependencies(waypoint_node waypoint_generate_messages_cpp)
 target_link_libraries(waypoint_node ${catkin_LIBRARIES})
