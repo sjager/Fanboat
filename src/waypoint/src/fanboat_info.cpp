@@ -11,6 +11,7 @@
 #include <landmark_self_sim/landmarkLocation.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Int32.h>
+#include <waypoint/arduinoAngle.h>
 
 // HNNNGG SO MANY USINGSSS
 using std_msgs::Float32;
@@ -22,6 +23,7 @@ using fanboat_ll::fanboatLL;
 using fanboat_ll::fanboatMotors;
 using landmark_self_sim::landmarkLocation;
 using lab2::range;
+using waypoint::arduinoAngle;
 
 // message to be published
 fanboatInfo fbInfo;
@@ -33,6 +35,8 @@ fanboatLL IMUMsg;
 fanboatMotors motorMsg;
 range IRMsg;
 landmarkInfo landmarkInfoMsg;
+arduinoAngle arduinoInfoMsg;
+
 void controlCallback(const lab3::fanboatControl::ConstPtr& msg) {
     controlMsg = *msg; 
 }
@@ -55,6 +59,10 @@ void landmarkCallback(const waypoint::landmarkInfo::ConstPtr& msg) {
 
 void IRCallback(const lab2::range::ConstPtr& msg) {
     IRMsg = *msg;
+}
+
+void arduinoCallback(const waypoint::arduinoAngle::ConstPtr& msg) {
+	arduinoInfoMsg = *msg;
 }
 
 
@@ -96,6 +104,8 @@ int main(int argc, char **argv) {
     ros::Subscriber landmarkSub = n.subscribe("/landmarkInfo", 1000, landmarkCallback);
     
     ros::Subscriber IRSub = n.subscribe("/ir_range", 1000, IRCallback);
+
+	ros::Subscriber arduino = n.subscribe("servoAngle", 1000, arduinoCallback);
     
     
     //ros::Subscriber cameraSub = n.subscribe("/waypoint/control", 1000, cameraCallback);
@@ -127,6 +137,10 @@ int main(int argc, char **argv) {
         //TODO: These might be backwards. Double check IR a and b vs L and R
         fbInfo.IRLDist = IRMsg.a;
         fbInfo.IRRDist = IRMsg.b;
+
+		//Arduino info 
+		fbInfo.camAngle = arduinoInfoMsg.camAngle;
+		fbInfo.camCentered = arduinoInfoMsg.centered;
         
         //fbInfo.camAngle
         

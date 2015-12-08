@@ -20,3 +20,4 @@ float32 IRLDist
 float32 IRRDist
 
 float32 camAngle
+bool camCentered
