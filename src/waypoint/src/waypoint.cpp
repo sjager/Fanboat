@@ -49,6 +49,24 @@ void infoCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
 void determineState() {
     // DO STATE LOGIC RIGHT HURR
     // currentState = lalala
+
+    //If the current landmark is equal to the desired landmark, PURSUE
+    if(infoMsg.curLandmark == infoMsg.tgtLandmark)
+    {
+        currentState = PURSUE;
+
+        //If the ir sensors see something in the way that is closer than the landmark, AVOID
+        if(infoMsg.curIrDistance < infoMsg.tgtIrDistance 
+            && infoMsg.curIrDistance < infoMsg.curCamDistance)
+        {
+            currentState = AVOID;
+        }
+    }
+    else //Otherwise, SEARCH
+    {
+        currentState = SEARCH;
+    }
+
 }
 
 int main(int argc, char **argv) {
