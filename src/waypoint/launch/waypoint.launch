@@ -25,10 +25,17 @@
   <node name="mixer_node" pkg="lab2" type="mixer_node" />
 
   <node name="avoid_state_node" pkg ="waypoint" type="avoid_state_node" />
+  
   <node name="search_state_node" pkg ="waypoint" type="search_state_node" />
+  
   <node name="pursue_state_node" pkg ="waypoint" type="pursue_state_node" />
+  
   <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" />
+  
   <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
+  
   <node name="fanboat_info_node" pkg ="waypoint" type="fanboat_info_node" />
+  <param name="target_cam_distance" value=".5" />
+  <param name="target_IR_distance" value=".5" />
 
 </launch>
