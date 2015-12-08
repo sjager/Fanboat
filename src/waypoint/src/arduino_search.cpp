@@ -54,6 +54,12 @@ int main(int argc, char **argv) {
 	  iterator = iterator - step;
 	  angleMessage.camAngle = int(iterator);
 	} 
+
+	if(step == 0) {
+	  angleMessage.centered = true;
+	} else {
+	  angleMessage.centered = false;
+	}
 	
 	anglePub.publish(angleMessage);
     ros::spinOnce();

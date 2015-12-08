@@ -210,7 +210,6 @@ int16 a7\n\
 #Current settings of the motors [-1.0,1.0]\n\
 float64 leftMotorSetting\n\
 float64 rightMotorSetting\n\
-\n\
 ================================================================================\n\
 MSG: std_msgs/Header\n\
 # Standard metadata for higher-level stamped data types.\n\
