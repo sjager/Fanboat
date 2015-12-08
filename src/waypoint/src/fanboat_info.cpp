@@ -18,6 +18,7 @@ using lab3::fanboatControl;
 using fanboat_ll::fanboatLL;
 using fanboat_ll::fanboatMotors;
 using landmark_self_sim::landmarkLocation;
+using lab2::range;
 
 // message to be published
 fanboatInfo fbInfo;
@@ -28,6 +29,7 @@ Int32 tgtLandmarkMsg;
 fanboatLL IMUMsg;
 fanboatMotors motorMsg;
 landmarkLocation landmarkLocationMsg;
+range IRMsg;
 
 void controlCallback(const lab3::fanboatControl::ConstPtr& msg) {
     controlMsg = *msg; 
@@ -55,7 +57,10 @@ void landmarkCallback(const landmark_self_sim::landmarkLocation::ConstPtr& msg) 
 }
 */
 
-//TODO: IR callback
+void IRCallback(const lab2::range::ConstPtr& msg) {
+    IRMsg = *msg;
+}
+
 
 //TODO: camera servo callback
 /*
@@ -84,11 +89,10 @@ int main(int argc, char **argv) {
     
     /*
     ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, landmarkCallback);
-    
-    //TODO: subscribe to the right IR topic
-    
-    ros::Subscriber IRSub = n.subscribe("/IRTOPIC?, 1000, IRCallback);
     */
+    
+    ros::Subscriber IRSub = n.subscribe("/ir_range, 1000, IRCallback);
+    
     
     //ros::Subscriber cameraSub = n.subscribe("/waypoint/control", 1000, cameraCallback);
 
@@ -116,8 +120,10 @@ int main(int argc, char **argv) {
         //fbInfo.curLandmark
         //fbInfo.curCamDistance
         //fbInfo.curIrDistance
-        //fbInfo.IRL
-        //fbInfo.IRR
+        
+        //TODO: These might be backwards. Double check IR a and b vs L and R
+        fbInfo.IRLDist = IRMsg.a;
+        fbInfo.IRRDist = IRMsg.b;
         
         //fbInfo.camAngle
         

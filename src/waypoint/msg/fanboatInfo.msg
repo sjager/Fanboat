@@ -16,7 +16,7 @@ float32 curIrDistance
 float32 motorR
 float32 motorL
 
-float32 IRL
-float32 IRR
+float32 IRLDist
+float32 IRRDist
 
 float32 camAngle
