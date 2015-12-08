@@ -1,0 +1,5 @@
+<launch>
+  <rosparam param="waypoints">[1,4,9,12]</rosparam>
+
+  <node type="waypoint_node" pkg="waypoint" name="waypoint_node" output="screen"/>
+</launch>

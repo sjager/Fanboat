@@ -1,0 +1,14 @@
+<launch>
+  <node name="fanboat_info_node" pkg="waypoint" type="fanboat_info_node">
+
+  </node>
+
+  <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
+  <param name="pParam" value="0.03" />  
+  <param name="dParam" value="0.05" />
+  <param name="iParam" value="0.0" />
+
+  <node name="mixer_node" pkg="lab2" type="mixer_node" />
+
+  <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
+</launch>

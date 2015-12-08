@@ -1,4 +1,5 @@
 <launch>
+  <rosparam param="waypoints">[1, 4, 9, 12]</rosparam>
         
   <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
   <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
