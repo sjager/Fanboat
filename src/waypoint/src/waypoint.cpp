@@ -8,6 +8,7 @@
 #include <waypoint/fanboatInfo.h>
 #include <vector>
 #include <iterator>
+#include <std_msgs/Int32.h>
 
 #define SEARCH 1
 #define PURSUE 2
@@ -15,6 +16,9 @@
 
 using lab3::fanboatControl;
 using waypoint::fanboatInfo;
+using std_msgs::Int32;
+
+bool waitingForInfo = true;
 
 std::vector<int> waypoints;
 int currentWaypointIndex;
@@ -27,6 +31,7 @@ fanboatControl pursueMsg;
 fanboatControl avoidMsg;
 
 fanboatInfo infoMsg;
+Int32 tgtLandmarkPubMsg;
 
 // the message that gets selected among the three state nodes to be published
 fanboatControl finalControlMsg;
@@ -44,12 +49,11 @@ void avoidCallback(const lab3::fanboatControl::ConstPtr& msg) {
     avoidMsg = *msg;
 }
 
-
 // fanboatInfo callback
 void infoCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
     infoMsg = *msg;
+    waitingForInfo = false;
 }
-
 
 void determineState() {
     // DO STATE LOGIC RIGHT HURR
@@ -61,10 +65,17 @@ void determineState() {
         currentState = PURSUE;
 
         //If the ir sensors see something in the way that is closer than the landmark, AVOID
-        if(infoMsg.curIrDistance < infoMsg.tgtIrDistance 
-            && infoMsg.curIrDistance < infoMsg.curCamDistance)
+        if(infoMsg.curIrDistance < infoMsg.tgtIrDistance && infoMsg.curIrDistance < infoMsg.curCamDistance)
         {
             currentState = AVOID;
+        }
+        //If the fanboat is finally there, it's time to find the next landmark
+        else if (infoMsg.curCamDistance <= infoMsg.tgtCamDistance)
+        {
+            if(currentWaypointIndex < waypoints.size()-1)
+            {
+                currentWaypointIndex++;
+            }
         }
     }
     else //Otherwise, SEARCH
@@ -81,6 +92,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
 
     ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/waypoint/control", 1000);
+    ros::Publisher tgtLandmarkPub = n.advertise<std_msgs::Int32>("/waypoint/landmark", 1000);
     
     ros::Subscriber searchSub = n.subscribe("/state/search", 1000, searchCallback);
     ros::Subscriber pursueSub = n.subscribe("/state/pursue", 1000, pursueCallback);
@@ -92,14 +104,19 @@ int main(int argc, char **argv) {
     if(waypoints.size() < 1) return -1;
 
     currentWaypointIndex = 0;
-    ROS_INFO("WAYPOINTS:");
-    ROS_INFO("Size: %d", (int)waypoints.size());
-    for (; currentWaypointIndex < waypoints.size(); currentWaypointIndex++)
-    {
-      ROS_INFO("%d", waypoints.at(currentWaypointIndex));
-    }
-
+    
     ros::Rate loop_rate(8);
+
+    // This code block tells the fanboat to set the target angle to its starting orientation upon startup
+    /*
+    while(waitingForInfo);
+    ROS_INFO("reset orientation");
+    
+    finalControlMsg.angle = infoMsg.curAngle;
+    controlPub.publish(finalControlMsg);
+    */
+    
+    ros::Duration(2).sleep(); 
 
     while(ros::ok())
     {
@@ -120,7 +137,11 @@ int main(int argc, char **argv) {
                 ROS_INFO("state undetermined");
         }
         
+        ROS_INFO("Looking for: %d",waypoints.at(currentWaypointIndex));
+        tgtLandmarkPubMsg.data = waypoints.at(currentWaypointIndex);
+        
         controlPub.publish(finalControlMsg);
+        tgtLandmarkPub.publish(tgtLandmarkPubMsg);
         ros::spinOnce();
         loop_rate.sleep();
     }
