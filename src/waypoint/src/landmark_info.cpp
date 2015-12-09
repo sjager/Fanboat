@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
         {
             info.header = location.header;
             info.id = 0;
-            info.distance = -1;   
+            info.distance = 9999;   
         }
 
 

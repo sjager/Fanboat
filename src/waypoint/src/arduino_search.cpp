@@ -18,8 +18,8 @@ int targetCode = 68;
 //Set up some things that should be constants
 int HIGH_BOUND = 370;
 int LOW_BOUND = 270;
-int BIG_STEP = 2;
-double SMALL_STEP = 1.0;
+int BIG_STEP = 1;
+double SMALL_STEP = 0.5;
 
 
 //Function 
@@ -52,7 +52,7 @@ void codeCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
 }
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "arduinoSearchNode");
+  ros::init(argc, argv, "arduino_search_node");
   
   ros::NodeHandle n;
   

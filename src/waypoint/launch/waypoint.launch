@@ -15,7 +15,10 @@
     <!-- <remap from="/usb_cam/image_raw" to="/image"/> -->
   </node>
 
-  <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector" />
+  <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector"> 
+    <remap from="image" to="/usb_cam/image_raw"/>
+  </node>
+  
   
   <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
   <param name="pParam" value="0.03" />  
@@ -26,12 +29,15 @@
 
   <node name="avoid_state_node" pkg ="waypoint" type="avoid_state_node" />
   
-  <node name="search_state_node" pkg ="waypoint" type="search_state_node" />
+  <!--<node name="search_state_node" pkg="waypoint" type="search_state_node" />-->
+  <node name="arduino_serial" pkg="waypoint" type="arduino_serial.py" />
+  <node name="arduino_search_node" pkg="waypoint" type="arduino_search_node" output="screen"/>
   
   <node name="pursue_state_node" pkg ="waypoint" type="pursue_state_node" />
   
-  <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" />
-  
+  <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" output="screen"/>
+  <rosparam param="waypoints">[32,68,1]</rosparam>
+
   <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
   
   <node name="fanboat_info_node" pkg ="waypoint" type="fanboat_info_node" />

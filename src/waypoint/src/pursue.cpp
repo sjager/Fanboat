@@ -38,10 +38,10 @@ int main(int argc, char **argv) {
     while(ros::ok()) {
 
         //Turn to face the right way
-		if(infoMsg.camAngle > 10) {
+		if((infoMsg.camAngle > 10) && (infoMsg.camCentered)) {
 	        controlMsg.angle = fmod((infoMsg.curAngle + infoMsg.camAngle),360);
 	        controlMsg.ignoreAngle = false;
-	    } else {
+	    } else if (infoMsg.camCentered) {
 	        controlMsg.ignoreAngle = true;
 			controlMsg.magnitude = forwardMag;
 	    }
