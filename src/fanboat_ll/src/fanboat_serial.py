@@ -87,7 +87,7 @@ class TheNode(object):
       msg.header.stamp = rospy.Time.now()
       msg.roll = self.readTwoByteAndChecksum()/100.0
       msg.pitch = self.readTwoByteAndChecksum()/100.0
-      msg.yaw = self.readTwoByteAndChecksum()/100.0
+      msg.yaw = self.readTwoByteAndChecksum()/100.0 - 360
       msg.a0 = self.readTwoByteAndChecksum()
       msg.a1 = self.readTwoByteAndChecksum()
       msg.a2 = self.readTwoByteAndChecksum()
