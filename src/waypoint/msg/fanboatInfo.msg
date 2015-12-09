@@ -11,7 +11,6 @@ bool ignoreAngle
 
 int32 curLandmark
 float32 curCamDistance
-float32 curIrDistance
 
 float32 motorR
 float32 motorL

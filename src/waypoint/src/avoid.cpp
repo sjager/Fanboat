@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 
         // Check that the obstacle is in front of us. 
         // If it is, turn more.
-        if(infoMsg.curIrDistance < infoMsg.tgtIrDistance)
+        if((infoMsg.IRRDist < infoMsg.tgtIrDistance) || (infoMsg.IRRDist < infoMsg.tgtIrDistance))
         {
             controlMsg.angle = infoMsg.curAngle + turnBy;
         }

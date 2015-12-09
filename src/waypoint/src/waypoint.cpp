@@ -65,13 +65,17 @@ void determineState() {
         currentState = PURSUE;
 
         //If the ir sensors see something in the way that is closer than the landmark, AVOID
-        if(infoMsg.curIrDistance < infoMsg.tgtIrDistance && infoMsg.curIrDistance < infoMsg.curCamDistance)
+        if(
+         ((infoMsg.IRLDist < infoMsg.tgtIrDistance) || (infoMsg.IRRDist < infoMsg.tgtIrDistance)) &&
+         ((infoMsg.IRLDist < infoMsg.curCamDistance) || (infoMsg.IRRDist < infoMsg.curCamDistance))
+         )
         {
             currentState = AVOID;
         }
         //If the fanboat is finally there, it's time to find the next landmark
         else if (infoMsg.curCamDistance <= infoMsg.tgtCamDistance)
         {
+            // shouldn't we be making sure that the boat is turned in the right direction?
             if(currentWaypointIndex < waypoints.size()-1)
             {
                 currentWaypointIndex++;
@@ -82,7 +86,6 @@ void determineState() {
     {
         currentState = SEARCH;
     }
-
 }
 
 int main(int argc, char **argv) {
@@ -125,13 +128,16 @@ int main(int argc, char **argv) {
         switch(currentState)
         {
             case SEARCH :
-                finalControlMsg = searchMsg; 
+                finalControlMsg = searchMsg;
+                ROS_INFO("SEARCH"); 
                 break;
             case PURSUE :
                 finalControlMsg = pursueMsg;
+                ROS_INFO("PURSUE");
                 break;
             case AVOID  :
                 finalControlMsg = avoidMsg;
+                ROS_INFO("AVOID");
                 break;
             default :
                 ROS_INFO("state undetermined");
