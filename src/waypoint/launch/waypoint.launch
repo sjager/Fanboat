@@ -31,7 +31,7 @@
   <node name="arduino_search_node" pkg="waypoint" type="arduino_search_node" output="screen"/>
   
   <node name="pursue_state_node" pkg ="waypoint" type="pursue_state_node" />
-  <param name="forwardMagnitude" value=".5" />
+  <param name="forwardMagnitude" value=".7" />
   
   <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" output="screen"/>
   <rosparam param="waypoints">[32,32,68]</rosparam>

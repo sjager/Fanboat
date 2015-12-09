@@ -118,6 +118,9 @@ int main(int argc, char **argv) {
     finalControlMsg.angle = infoMsg.curAngle;
     controlPub.publish(finalControlMsg);
     */
+
+    searchMsg.magnitude = 0;
+    searchMsg.ignoreAngle = true;
     
     ros::Duration(2).sleep(); 
 

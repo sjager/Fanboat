@@ -40,11 +40,10 @@ int main(int argc, char **argv) {
         //Turn to face the right way
 		if((infoMsg.camAngle > 10) && (infoMsg.camCentered)) {
 	        controlMsg.ignoreAngle = false;
+            controlMsg.magnitude = 0;
 	        controlMsg.angle = fmod((infoMsg.curAngle + infoMsg.camAngle),360);
-	        
 	        controlMsg.angle = -1 * controlMsg.angle + 180;
-	        
-	    } else if (infoMsg.camCentered) {
+        } else {
 	        controlMsg.ignoreAngle = true;
 			controlMsg.magnitude = forwardMag;
 	    }
