@@ -41,6 +41,9 @@ int main(int argc, char **argv) {
 		if((infoMsg.camAngle > 10) && (infoMsg.camCentered)) {
 	        controlMsg.ignoreAngle = false;
 	        controlMsg.angle = fmod((infoMsg.curAngle + infoMsg.camAngle),360);
+	        
+	        controlMsg.angle = -1 * controlMsg.angle + 180;
+	        
 	    } else if (infoMsg.camCentered) {
 	        controlMsg.ignoreAngle = true;
 			controlMsg.magnitude = forwardMag;
