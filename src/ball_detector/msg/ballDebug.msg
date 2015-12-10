@@ -1,2 +1,0 @@
-bool sendDebugImages
-bool sendDebugTimes 
