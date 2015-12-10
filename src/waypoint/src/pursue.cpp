@@ -37,6 +37,7 @@ int main(int argc, char **argv) {
 
     while(ros::ok()) {
 
+        /*
         //Turn to face the right way
 		if((infoMsg.camAngle > 10) && (infoMsg.camCentered)) {
 	        controlMsg.ignoreAngle = false;
@@ -47,6 +48,21 @@ int main(int argc, char **argv) {
 	        controlMsg.ignoreAngle = true;
 			controlMsg.magnitude = forwardMag;
 	    }
+        */
+
+        if((infoMsg.camAngle < 178) && (infoMsg.camAngle > 5)) {
+            //turn right
+            controlMsg.angle = infoMsg.curAngle + 90;
+            controlMsg.magnitude = 0;
+        } else if((infoMsg.camAngle > 182) && (infoMsg.camAngle < 355)) {
+            //turn left
+            controlMsg.angle = infoMsg.curAngle - 90;
+            controlMsg.magnitude = 0;
+        } else {
+            controlMsg.ignoreAngle = true;
+			controlMsg.magnitude = forwardMag;
+        }
+
 
         controlPub.publish(controlMsg);
         ros::spinOnce();

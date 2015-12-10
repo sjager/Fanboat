@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
     ros::Publisher infoPub = n.advertise<waypoint::fanboatInfo>("/fanboatInfo", 1000);
     
-    ros::Subscriber controlSub = n.subscribe("/waypoint/control", 1000, controlCallback);
+    ros::Subscriber controlSub = n.subscribe("/fanboat_control", 1000, controlCallback);
     
     ros::Subscriber tgtLandmarkSub = n.subscribe("/waypoint/landmark", 1000, tgtLandmarkCallback);
     

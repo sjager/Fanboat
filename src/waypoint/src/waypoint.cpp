@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
     ros::NodeHandle n;
 
-    ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/waypoint/control", 1000);
+    ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
     ros::Publisher tgtLandmarkPub = n.advertise<std_msgs::Int32>("/waypoint/landmark", 1000);
     
     ros::Subscriber searchSub = n.subscribe("/state/search", 1000, searchCallback);

@@ -7,9 +7,18 @@
 #include <lab3/fanboatControl.h>
 #include <lab3/metrics.h>
 #include <waypoint/landmarkInfo.h>
+#define ARRAYSIZE 10
 
 using landmark_self_sim::landmarkLocation;
 using waypoint::landmarkInfo;
+
+int histArray[ARRAYSIZE];
+int currentIndex = -1;
+
+int arraySize;
+int threshold;
+
+double fillPercentage = 0;
 
 landmarkLocation location;
 
@@ -20,6 +29,33 @@ double distance;
 int seq_loc=0;
 int seq_info=0;
 
+
+void instantiateArray() {
+    int i;
+    for(i = 0; i< ARRAYSIZE; i++) {
+        histArray[i] = 0;
+    }
+}
+
+void updateArray() {
+    int val = 0;
+    
+    if(location.code == info.id) {
+        val = 1;       
+    }
+    int nextIndex = (currentIndex++) % ARRAYSIZE;
+    currentIndex = nextIndex;
+    
+    histArray[currentIndex] = val;
+    
+    int sum = 0;
+    int i;
+    for(i = 0; i < ARRAYSIZE; i++) {
+        sum += histArray[currentIndex];
+    }
+    
+    fillPercentage = (double) (sum / ARRAYSIZE);
+}
 
 float calculateDistance(float height) {
   float dist = 145.86*pow(height, -0.993);
@@ -39,9 +75,13 @@ void locationCallback(const landmarkLocation::ConstPtr& msg) {
 
 int main(int argc, char **argv) {
 
+    instantiateArray();
+
     ros::init(argc, argv, "landmark_info_node");
 
     ros::NodeHandle n;
+    
+    n.getParam("threshold", threshold);
 
     ros::Publisher infoPub = n.advertise<waypoint::landmarkInfo>("/landmarkInfo", 1000);
 
@@ -51,6 +91,8 @@ int main(int argc, char **argv) {
 
     while(ros::ok()) {
 
+        updateArray();
+        /*
         if(seq_loc>seq_info)
         {
             info.header = location.header;
@@ -65,7 +107,19 @@ int main(int argc, char **argv) {
             info.id = 0;
             info.distance = 9999;   
         }
+        */
+        
+        if(fillPercentage >= threshold) {
+            info.header = location.header;
+            info.id = location.code;
+            info.distance = distance;
 
+            seq_info = seq_loc;
+        } else {
+            info.header = location.header;
+            info.id = 0;
+            info.distance = 9999;
+        }
 
         infoPub.publish(info);
         

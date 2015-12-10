@@ -37,6 +37,7 @@
   <rosparam param="waypoints">[32,32,68]</rosparam>
 
   <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
+  <param name="threshold" value=".3" />
   
   <node name="fanboat_info_node" pkg ="waypoint" type="fanboat_info_node" />
   <param name="target_cam_distance" value=".5" />
