@@ -52,16 +52,23 @@ int main(int argc, char **argv) {
 
         if((infoMsg.camAngle < 178) && (infoMsg.camAngle > 5)) {
             //turn right
-            controlMsg.angle = infoMsg.curAngle + 90;
+            controlMsg.angle = infoMsg.curAngle + 120;
             controlMsg.magnitude = 0;
         } else if((infoMsg.camAngle > 182) && (infoMsg.camAngle < 355)) {
             //turn left
-            controlMsg.angle = infoMsg.curAngle - 90;
+            controlMsg.angle = infoMsg.curAngle - 120;
             controlMsg.magnitude = 0;
-        } else {
+        } else if(infoMsg.curCamDistance > infoMsg.tgtCamDistance) {
             controlMsg.ignoreAngle = true;
-			controlMsg.magnitude = forwardMag;
-        }
+			if(infoMsg.curCamDistance > 2.0) {
+				controlMsg.magnitude = forwardMag;
+			} else {
+				controlMsg.magnitude = forwardMag - 0.2;
+			}
+        } else {
+			controlMsg.ignoreAngle = true;
+			controlMsg.magnitude = 0;
+		}
 
 
         controlPub.publish(controlMsg);

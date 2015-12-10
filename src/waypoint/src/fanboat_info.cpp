@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
     
     //ros::Subscriber cameraSub = n.subscribe("/waypoint/control", 1000, cameraCallback);
 
-    ros::Rate loop_rate(8);
+    ros::Rate loop_rate(5);
 
     while(ros::ok())
     {        

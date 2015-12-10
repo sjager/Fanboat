@@ -60,7 +60,7 @@ void determineState() {
     // currentState = lalala
 
     //If the current landmark is equal to the desired landmark, PURSUE
-    if(infoMsg.curLandmark == infoMsg.tgtLandmark)
+    if(infoMsg.curLandmark == infoMsg.tgtLandmark  || infoMsg.curLandmark == -1)
     {
         currentState = PURSUE;
 

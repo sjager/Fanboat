@@ -31,16 +31,16 @@
   <node name="arduino_search_node" pkg="waypoint" type="arduino_search_node" output="screen"/>
   
   <node name="pursue_state_node" pkg ="waypoint" type="pursue_state_node" />
-  <param name="forwardMagnitude" value=".7" />
+  <param name="forwardMagnitude" value=".9" />
   
   <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" output="screen"/>
   <rosparam param="waypoints">[32,32,68]</rosparam>
 
   <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
-  <param name="threshold" value=".3" />
+  <param name="threshold" value=".1" />
   
   <node name="fanboat_info_node" pkg ="waypoint" type="fanboat_info_node" />
-  <param name="target_cam_distance" value=".5" />
+  <param name="target_cam_distance" value=".7" />
   <param name="target_IR_distance" value=".5" />
 
 </launch>
