@@ -60,7 +60,7 @@ void determineState() {
     // currentState = lalala
 
     //If the current landmark is equal to the desired landmark, PURSUE
-    if(infoMsg.curLandmark == infoMsg.tgtLandmark  || infoMsg.curLandmark == -1)
+    if((infoMsg.curLandmark == infoMsg.tgtLandmark  || infoMsg.curLandmark == -1) && infoMsg.curLandmark != 0)
     {
         currentState = PURSUE;
 
@@ -79,6 +79,7 @@ void determineState() {
             if(currentWaypointIndex < waypoints.size()-1)
             {
                 currentWaypointIndex++;
+				ROS_INFO("Index: %d", currentWaypointIndex);
             }
         }
     }

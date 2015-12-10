@@ -34,7 +34,7 @@
   <param name="forwardMagnitude" value=".9" />
   
   <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" output="screen"/>
-  <rosparam param="waypoints">[32,32,68]</rosparam>
+  <rosparam param="waypoints">[3,32,68,80]</rosparam>
 
   <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
   <param name="threshold" value=".1" />
