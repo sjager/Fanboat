@@ -6,8 +6,8 @@
 #include <math.h>
 #include <algorithm>
 
-#define FAN_MIN .12
-#define FAN_MAX .9
+#define FAN_MIN .1
+#define FAN_MAX .95
 
 fanboat_ll::fanboatMotors angleMsg;
 lab2::magnitude magMsg;
@@ -33,8 +33,8 @@ int main(int argc, char **argv) {
   ros::Rate loop_rate(8);
   
   
-  pubMsg.right = .12;
-  pubMsg.left = .12;
+  pubMsg.right = .1;
+  pubMsg.left = .1;
 
   while(ros::ok()) {
     float right = angleMsg.right;
@@ -81,8 +81,8 @@ int main(int argc, char **argv) {
       left = FAN_MAX;
     }
     
-    if(right < .12) right = .12;
-    if(left < .12) left = .12;
+    if(right < .1) right = .1;
+    if(left < .1) left = .1;
 
 
     //ROS_INFO("RS: %f, LS: %f", right, left);

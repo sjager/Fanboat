@@ -33,6 +33,8 @@ fanboatControl avoidMsg;
 fanboatInfo infoMsg;
 Int32 tgtLandmarkPubMsg;
 
+bool done = false;
+
 // the message that gets selected among the three state nodes to be published
 fanboatControl finalControlMsg;
 
@@ -60,7 +62,7 @@ void determineState() {
     // currentState = lalala
 
     //If the current landmark is equal to the desired landmark, PURSUE
-    if((infoMsg.curLandmark == infoMsg.tgtLandmark  || infoMsg.curLandmark == -1) && infoMsg.curLandmark != 0)
+    if((infoMsg.curLandmark == waypoints.at(currentWaypointIndex) || infoMsg.curLandmark == -1) && infoMsg.curLandmark != 0)
     {
         currentState = PURSUE;
 
@@ -80,6 +82,8 @@ void determineState() {
             {
                 currentWaypointIndex++;
 				ROS_INFO("Index: %d", currentWaypointIndex);
+			} else {
+				done = true;
             }
         }
     }
@@ -125,7 +129,7 @@ int main(int argc, char **argv) {
     
     ros::Duration(2).sleep(); 
 
-    while(ros::ok())
+    while(ros::ok() && !done)
     {
         determineState();
         
@@ -155,6 +159,10 @@ int main(int argc, char **argv) {
         ros::spinOnce();
         loop_rate.sleep();
     }
+
+	if(done) {
+		ROS_INFO("I did it!");
+	}
     
     return 0;
 }

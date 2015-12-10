@@ -14,6 +14,7 @@ using waypoint::fanboatInfo;
 fanboatControl controlMsg;
 
 double forwardMag = 0;
+double slowOffset = 0;
 
 fanboatInfo infoMsg;
 
@@ -34,6 +35,7 @@ int main(int argc, char **argv) {
     ros::Rate loop_rate(8);
 
 	n.getParam("forwardMagnitude", forwardMag);
+	n.getParam("slowOffset", slowOffset);
 
     while(ros::ok()) {
 
@@ -52,18 +54,18 @@ int main(int argc, char **argv) {
 
         if((infoMsg.camAngle <= 180) && (infoMsg.camAngle > 5)) {
             //turn right
-            controlMsg.angle = infoMsg.curAngle + 120;
+            controlMsg.angle = infoMsg.curAngle + 360;
             controlMsg.magnitude = 0;
         } else if((infoMsg.camAngle > 180) && (infoMsg.camAngle < 355)) {
             //turn left
-            controlMsg.angle = infoMsg.curAngle - 120;
+            controlMsg.angle = infoMsg.curAngle - 360;
             controlMsg.magnitude = 0;
         } else if(infoMsg.curCamDistance > infoMsg.tgtCamDistance) {
             controlMsg.ignoreAngle = true;
 			if(infoMsg.curCamDistance > 2.0) {
-				controlMsg.magnitude = forwardMag - 0.1;
+				controlMsg.magnitude = forwardMag - slowOffset;
 			} else {
-				controlMsg.magnitude = forwardMag - 0.2;
+				controlMsg.magnitude = forwardMag;
 			}
         } else {
 			controlMsg.ignoreAngle = true;
