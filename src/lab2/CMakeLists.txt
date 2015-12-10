@@ -140,17 +140,17 @@ add_executable(joy_splitter_node src/joy_splitter.cpp)
 target_link_libraries(joy_splitter_node ${catkin_LIBRARIES})
 add_dependencies(joy_splitter_node lab2_generate_messages_cpp)
 
-add_executable(mux_node src/mux.cpp)
-target_link_libraries(mux_node ${catkin_LIBRARIES})
-add_dependencies(mux_node lab2_generate_messages_cpp)
+#add_executable(mux_node src/mux.cpp)
+#target_link_libraries(mux_node ${catkin_LIBRARIES})
+#add_dependencies(mux_node lab2_generate_messages_cpp)
 
-add_executable(mux_control_node src/mux_control.cpp)
-target_link_libraries(mux_control_node ${catkin_LIBRARIES})
-add_dependencies(mux_control_node lab2_generate_messages_cpp)
+#add_executable(mux_control_node src/mux_control.cpp)
+#target_link_libraries(mux_control_node ${catkin_LIBRARIES})
+#add_dependencies(mux_control_node lab2_generate_messages_cpp)
 
-add_executable(triangle_node src/triangle.cpp)
-target_link_libraries(triangle_node ${catkin_LIBRARIES})
-add_dependencies(triangle_node lab2_generate_messages_cpp)
+#add_executable(triangle_node src/triangle.cpp)
+#target_link_libraries(triangle_node ${catkin_LIBRARIES})
+#add_dependencies(triangle_node lab2_generate_messages_cpp)
 
 add_executable(mixer_node src/mixer.cpp)
 target_link_libraries(mixer_node ${catkin_LIBRARIES})
@@ -160,17 +160,17 @@ add_executable(ir_range_node src/irRange.cpp)
 target_link_libraries(ir_range_node ${catkin_LIBRARIES})
 add_dependencies(ir_range_node lab2_generate_messages_cpp)
 
-add_executable(reactive_control_node src/reactive_control.cpp)
-target_link_libraries(reactive_control_node ${catkin_LIBRARIES})
-add_dependencies(reactive_control_node lab2_generate_messages_cpp)
+#add_executable(reactive_control_node src/reactive_control.cpp)
+#target_link_libraries(reactive_control_node ${catkin_LIBRARIES})
+#add_dependencies(reactive_control_node lab2_generate_messages_cpp)
 
-add_executable(mapping_node src/mapping.cpp)
-target_link_libraries(mapping_node ${catkin_LIBRARIES})
-add_dependencies(mapping_node lab2_generate_messages_cpp)
+#add_executable(mapping_node src/mapping.cpp)
+#target_link_libraries(mapping_node ${catkin_LIBRARIES})
+#add_dependencies(mapping_node lab2_generate_messages_cpp)
 
-add_executable(mapping_mux_node src/mapping_mux.cpp)
-target_link_libraries(mapping_mux_node ${catkin_LIBRARIES})
-add_dependencies(mapping_mux_node lab2_generate_messages_cpp)
+#add_executable(mapping_mux_node src/mapping_mux.cpp)
+#target_link_libraries(mapping_mux_node ${catkin_LIBRARIES})
+#add_dependencies(mapping_mux_node lab2_generate_messages_cpp)
 
 
 ## Add cmake target dependencies of the executable
