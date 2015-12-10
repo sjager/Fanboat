@@ -16,8 +16,8 @@ double step = 2.0;
 int targetCode = 68;
 
 //Set up some things that should be constants
-int HIGH_BOUND = 370;
-int LOW_BOUND = 270;
+int HIGH_BOUND = 420;
+int LOW_BOUND = 220;
 int BIG_STEP = 1;
 double SMALL_STEP = 0.5;
 

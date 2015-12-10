@@ -54,11 +54,11 @@ int main(int argc, char **argv) {
 
         if((infoMsg.camAngle <= 180) && (infoMsg.camAngle > 5)) {
             //turn right
-            controlMsg.angle = infoMsg.curAngle + 360;
+            controlMsg.angle = infoMsg.curAngle + 90;
             controlMsg.magnitude = 0;
         } else if((infoMsg.camAngle > 180) && (infoMsg.camAngle < 355)) {
             //turn left
-            controlMsg.angle = infoMsg.curAngle - 360;
+            controlMsg.angle = infoMsg.curAngle - 90;
             controlMsg.magnitude = 0;
         } else if(infoMsg.curCamDistance > infoMsg.tgtCamDistance) {
             controlMsg.ignoreAngle = true;

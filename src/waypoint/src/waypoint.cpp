@@ -38,11 +38,6 @@ bool done = false;
 // the message that gets selected among the three state nodes to be published
 fanboatControl finalControlMsg;
 
-// state node callbacks
-void searchCallback(const lab3::fanboatControl::ConstPtr& msg) {
-    searchMsg = *msg;
-}
-
 void pursueCallback(const lab3::fanboatControl::ConstPtr& msg) {
     pursueMsg = *msg;
 }
@@ -102,7 +97,6 @@ int main(int argc, char **argv) {
     ros::Publisher controlPub = n.advertise<lab3::fanboatControl>("/fanboat_control", 1000);
     ros::Publisher tgtLandmarkPub = n.advertise<std_msgs::Int32>("/waypoint/landmark", 1000);
     
-    ros::Subscriber searchSub = n.subscribe("/state/search", 1000, searchCallback);
     ros::Subscriber pursueSub = n.subscribe("/state/pursue", 1000, pursueCallback);
     ros::Subscriber avoidSub  = n.subscribe("/state/avoid" , 1000, avoidCallback);
 
@@ -125,6 +119,7 @@ int main(int argc, char **argv) {
     */
 
     searchMsg.magnitude = 0;
+	searchMsg.angle = infoMsg.curAngle;
     searchMsg.ignoreAngle = true;
     
     ros::Duration(2).sleep(); 
@@ -137,7 +132,7 @@ int main(int argc, char **argv) {
         {
             case SEARCH :
                 finalControlMsg = searchMsg;
-                ROS_INFO("SEARCH"); 
+                ROS_INFO("SEARCH: M: %f; A: %f; I: %d", searchMsg.magnitude, searchMsg.angle, searchMsg.ignoreAngle); 
                 break;
             case PURSUE :
                 finalControlMsg = pursueMsg;
@@ -150,7 +145,9 @@ int main(int argc, char **argv) {
             default :
                 ROS_INFO("state undetermined");
         }
-        
+
+		ROS_INFO("Final: M: %f; A: %f; I: %d", finalControlMsg.magnitude, finalControlMsg.angle, finalControlMsg.ignoreAngle);
+
         ROS_INFO("Looking for: %d",waypoints.at(currentWaypointIndex));
         tgtLandmarkPubMsg.data = waypoints.at(currentWaypointIndex);
         
