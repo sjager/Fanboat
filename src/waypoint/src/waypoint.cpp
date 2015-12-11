@@ -18,8 +18,6 @@ using lab3::fanboatControl;
 using waypoint::fanboatInfo;
 using std_msgs::Int32;
 
-bool waitingForInfo = true;
-
 std::vector<int> waypoints;
 int currentWaypointIndex;
 
@@ -49,13 +47,9 @@ void avoidCallback(const lab3::fanboatControl::ConstPtr& msg) {
 // fanboatInfo callback
 void infoCallback(const waypoint::fanboatInfo::ConstPtr& msg) {
     infoMsg = *msg;
-    waitingForInfo = false;
 }
 
 void determineState() {
-    // DO STATE LOGIC RIGHT HURR
-    // currentState = lalala
-
     //If the current landmark is equal to the desired landmark, PURSUE
     if((infoMsg.curLandmark == waypoints.at(currentWaypointIndex) || infoMsg.curLandmark == -1) && infoMsg.curLandmark != 0)
     {
@@ -72,7 +66,6 @@ void determineState() {
         //If the fanboat is finally there, it's time to find the next landmark
         else if (infoMsg.curCamDistance <= infoMsg.tgtCamDistance)
         {
-            // shouldn't we be making sure that the boat is turned in the right direction?
             if(currentWaypointIndex < waypoints.size()-1)
             {
                 currentWaypointIndex++;
@@ -103,20 +96,15 @@ int main(int argc, char **argv) {
     ros::Subscriber fanboatInfoSub = n.subscribe("/fanboatInfo", 1000, infoCallback);
 
     n.getParam("waypoints", waypoints);
-    if(waypoints.size() < 1) return -1;
+    
+    if(waypoints.size() < 1) {
+        ROS_INFO("No waypoints set in launch file. Quitting.");
+        return -1;
+    } 
 
     currentWaypointIndex = 0;
     
     ros::Rate loop_rate(8);
-
-    // This code block tells the fanboat to set the target angle to its starting orientation upon startup
-    /*
-    while(waitingForInfo);
-    ROS_INFO("reset orientation");
-    
-    finalControlMsg.angle = infoMsg.curAngle;
-    controlPub.publish(finalControlMsg);
-    */
 
     searchMsg.magnitude = 0;
 	searchMsg.angle = infoMsg.curAngle;
@@ -132,14 +120,17 @@ int main(int argc, char **argv) {
         {
             case SEARCH :
                 finalControlMsg = searchMsg;
-                ROS_INFO("SEARCH: M: %f; A: %f; I: %d", searchMsg.magnitude, searchMsg.angle, searchMsg.ignoreAngle); 
+                controlPub.publish(searchMsg);
+                ROS_INFO("SEARCH!: M: %f; A: %f; I: %d", searchMsg.magnitude, searchMsg.angle, searchMsg.ignoreAngle); 
                 break;
             case PURSUE :
                 finalControlMsg = pursueMsg;
+                controlPub.publish(pursueMsg);
                 ROS_INFO("PURSUE");
                 break;
             case AVOID  :
                 finalControlMsg = avoidMsg;
+                controlPub.publish(avoidMsg);
                 ROS_INFO("AVOID");
                 break;
             default :
@@ -151,7 +142,7 @@ int main(int argc, char **argv) {
         ROS_INFO("Looking for: %d",waypoints.at(currentWaypointIndex));
         tgtLandmarkPubMsg.data = waypoints.at(currentWaypointIndex);
         
-        controlPub.publish(finalControlMsg);
+        //controlPub.publish(finalControlMsg);
         tgtLandmarkPub.publish(tgtLandmarkPubMsg);
         ros::spinOnce();
         loop_rate.sleep();
@@ -159,6 +150,7 @@ int main(int argc, char **argv) {
 
 	if(done) {
 		ROS_INFO("I did it!");
+		controlPub.publish(searchMsg);
 	}
     
     return 0;
