@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
             controlMsg.magnitude = 0;
         } else if(infoMsg.curCamDistance > infoMsg.tgtCamDistance) {
             controlMsg.ignoreAngle = true;
-			if(infoMsg.curCamDistance > 2.0) {
+			if(infoMsg.curCamDistance < 1.5) {
 				controlMsg.magnitude = forwardMag - slowOffset;
 			} else {
 				controlMsg.magnitude = forwardMag;

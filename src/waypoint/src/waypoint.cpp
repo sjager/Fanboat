@@ -67,7 +67,7 @@ void determineState() {
             currentState = AVOID;
         }
         //If the fanboat is finally there, it's time to find the next landmark
-        else if ((infoMsg.curCamDistance <= infoMsg.tgtCamDistance) && ((ros::Time::now() - lastFound).toSec() > 6))
+        else if ((infoMsg.curCamDistance <= infoMsg.tgtCamDistance) && ((ros::Time::now() - lastFound).toSec() > 6) && infoMsg.curLandmark == waypoints.at(currentWaypointIndex))
         {
             if(currentWaypointIndex < waypoints.size()-1)
             {
