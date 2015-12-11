@@ -52,11 +52,11 @@ int main(int argc, char **argv) {
 	    }
         */
 
-        if((infoMsg.camAngle <= 180) && (infoMsg.camAngle > 5)) {
+        if((infoMsg.camAngle <= 180) && (infoMsg.camAngle > 10)) {
             //turn right
             controlMsg.angle = infoMsg.curAngle + 90;
             controlMsg.magnitude = 0;
-        } else if((infoMsg.camAngle > 180) && (infoMsg.camAngle < 355)) {
+        } else if((infoMsg.camAngle > 180) && (infoMsg.camAngle < 350)) {
             //turn left
             controlMsg.angle = infoMsg.curAngle - 90;
             controlMsg.magnitude = 0;
