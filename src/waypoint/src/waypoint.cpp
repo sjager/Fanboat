@@ -9,6 +9,7 @@
 #include <vector>
 #include <iterator>
 #include <std_msgs/Int32.h>
+#include <std_msgs/Header.h>
 
 #define SEARCH 1
 #define PURSUE 2
@@ -23,6 +24,8 @@ int currentWaypointIndex;
 
 // identifies what the current state is
 int currentState;
+
+ros::Time lastFound;
 
 fanboatControl searchMsg;
 fanboatControl pursueMsg;
@@ -64,12 +67,13 @@ void determineState() {
             currentState = AVOID;
         }
         //If the fanboat is finally there, it's time to find the next landmark
-        else if (infoMsg.curCamDistance <= infoMsg.tgtCamDistance)
+        else if ((infoMsg.curCamDistance <= infoMsg.tgtCamDistance) && ((ros::Time::now() - lastFound).toSec() > 3))
         {
             if(currentWaypointIndex < waypoints.size()-1)
             {
                 currentWaypointIndex++;
 				ROS_INFO("Index: %d", currentWaypointIndex);
+				lastFound = infoMsg.header.stamp;
 			} else {
 				done = true;
             }
@@ -120,6 +124,7 @@ int main(int argc, char **argv) {
         {
             case SEARCH :
                 finalControlMsg = searchMsg;
+				searchMsg.angle = infoMsg.curAngle;
                 controlPub.publish(searchMsg);
                 ROS_INFO("SEARCH!: M: %f; A: %f; I: %d", searchMsg.magnitude, searchMsg.angle, searchMsg.ignoreAngle); 
                 break;

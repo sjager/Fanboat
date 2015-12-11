@@ -12,6 +12,7 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Int32.h>
 #include <waypoint/arduinoAngle.h>
+#include <std_msgs/Header.h>
 
 // HNNNGG SO MANY USINGSSS
 using std_msgs::Float32;
@@ -144,6 +145,7 @@ int main(int argc, char **argv) {
         
         //fbInfo.camAngle
         
+		fbInfo.header.stamp = ros::Time::now();
         infoPub.publish(fbInfo);
         ros::spinOnce();
         loop_rate.sleep();

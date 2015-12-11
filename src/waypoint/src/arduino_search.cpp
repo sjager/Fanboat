@@ -16,8 +16,8 @@ double step = 2.0;
 int targetCode = 68;
 
 //Set up some things that should be constants
-int HIGH_BOUND = 420;
-int LOW_BOUND = 220;
+int HIGH_BOUND = 400;
+int LOW_BOUND = 240;
 int BIG_STEP = 1;
 double SMALL_STEP = 0.5;
 
@@ -56,8 +56,8 @@ int main(int argc, char **argv) {
   
   ros::NodeHandle n;
   
-  ros::Publisher anglePub = n.advertise<waypoint::arduinoAngle>("servoAngle", 1000);
-  ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 1000, locationCallback);
+  ros::Publisher anglePub = n.advertise<waypoint::arduinoAngle>("servoAngle", 10);
+  ros::Subscriber landmarkSub = n.subscribe("/landmarkLocation", 10, locationCallback);
   ros::Subscriber fanboatInfo = n.subscribe("/fanboatInfo", 10, codeCallback);
   ros::Rate loop_rate(10);
   while(ros::ok()) {
