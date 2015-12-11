@@ -35,15 +35,15 @@ int main(int argc, char **argv) {
 
         // Check that the obstacle is in front of us. 
         // If it is, turn more.
-        if((infoMsg.IRRDist < infoMsg.tgtIrDistance) || (infoMsg.IRRDist < infoMsg.tgtIrDistance))
-        {
+//        if((infoMsg.IRRDist < infoMsg.tgtIrDistance) || (infoMsg.IRRDist < infoMsg.tgtIrDistance))
+//        {
             controlMsg.angle = infoMsg.curAngle + turnBy;
-        }
-        else //Otherwise, turn back to the angle we were moving towards the landmark at.
-        {
+//        }
+//        else //Otherwise, turn back to the angle we were moving towards the landmark at.
+//        {
             //NOTE: This assumes that the target angle is the angle we need to move at the landmark at.
-            controlMsg.angle = infoMsg.tgtAngle;
-        }
+//            controlMsg.angle = infoMsg.tgtAngle;
+//        }
 
         //Set the boat to half speed
         controlMsg.magnitude = infoMsg.tgtMagnitude / 2;

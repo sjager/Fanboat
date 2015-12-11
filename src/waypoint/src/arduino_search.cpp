@@ -61,8 +61,8 @@ int main(int argc, char **argv) {
   ros::Subscriber fanboatInfo = n.subscribe("/fanboatInfo", 10, codeCallback);
   ros::Rate loop_rate(10);
   while(ros::ok()) {
-    if(angleMessage.camAngle >= 360) {increase = false;}
-	if(angleMessage.camAngle <= 0) {increase = true;}
+    if(angleMessage.camAngle >= 360) { increase = false;}
+	if(angleMessage.camAngle <= 0) { increase = true;}
 
 	if(increase) {
       iterator = iterator + step;

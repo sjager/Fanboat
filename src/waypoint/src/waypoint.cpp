@@ -125,7 +125,8 @@ int main(int argc, char **argv) {
             case SEARCH :
                 finalControlMsg = searchMsg;
 				searchMsg.angle = -1 * infoMsg.curAngle + 180; //I beieve that this will translate the current angle into an angle the control msg wants
-                controlPub.publish(searchMsg);
+                //controlPub.publish(searchMsg);
+                controlPub.publish(avoidMsg);
                 ROS_INFO("SEARCH!: M: %f; A: %f; I: %d", searchMsg.magnitude, searchMsg.angle, searchMsg.ignoreAngle); 
                 break;
             case PURSUE :
