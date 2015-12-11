@@ -27,17 +27,17 @@
   <node name="avoid_state_node" pkg ="waypoint" type="avoid_state_node" />
   
   <node name="arduino_serial" pkg="waypoint" type="arduino_serial.py" />
-  <node name="arduino_search_node" pkg="waypoint" type="arduino_search_node" output="screen"/>
+  <node name="arduino_search_node" pkg="waypoint" type="arduino_search_node"/>
   
   <node name="pursue_state_node" pkg ="waypoint" type="pursue_state_node" />
-  <param name="forwardMagnitude" value=".75" />
+  <param name="forwardMagnitude" value=".7" />
   <param name="slowOffset" value="0.05" />
   
-  <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" output="screen"/>
+  <node name="waypoint_node" pkg ="waypoint" type="waypoint_node"/>
   <rosparam param="waypoints">[32,68,80]</rosparam>
 
-  <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
-  <param name="threshold" value=".1" />
+  <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" output="screen"/>
+  <param name="threshold" value=".2" />
   
   <node name="fanboat_info_node" pkg ="waypoint" type="fanboat_info_node" />
   <param name="target_cam_distance" value=".7" />

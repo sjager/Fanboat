@@ -16,9 +16,9 @@ int histArray[ARRAYSIZE];
 int currentIndex = -1;
 
 int arraySize;
-int threshold;
+double threshold;
 
-double fillPercentage = 0;
+double fillPercentage = 0.0;
 
 landmarkLocation location;
 
@@ -40,21 +40,18 @@ void instantiateArray() {
 void updateArray() {
     int val = 0;
     
-    if(location.code == info.id) {
-        val = 1;       
+    ROS_INFO("seq_loc: %d, seq_info %d", seq_loc, seq_info);
+
+    if(seq_loc>seq_info) {
+        fillPercentage += 0.1;
+    } else {
+        fillPercentage -= 0.1;
     }
-    int nextIndex = (currentIndex++) % ARRAYSIZE;
-    currentIndex = nextIndex;
-    
-    histArray[currentIndex] = val;
-    
-    int sum = 0;
-    int i;
-    for(i = 0; i < ARRAYSIZE; i++) {
-        sum += histArray[currentIndex];
-    }
-    
-    fillPercentage = (double) (sum / ARRAYSIZE);
+
+    ROS_INFO("Fill Percentage: %f", fillPercentage);
+
+    if(fillPercentage < 0) {fillPercentage = 0.0;}
+    if(fillPercentage > 1) {fillPercentage = 1.0;}
 }
 
 float calculateDistance(float height) {
@@ -108,17 +105,19 @@ int main(int argc, char **argv) {
             info.distance = 9999;   
         }
         */
-        
+        ROS_INFO("Fill: %f perc.", fillPercentage);
         if(fillPercentage >= threshold) {
             info.header = location.header;
             info.id = location.code;
             info.distance = distance;
 
             seq_info = seq_loc;
+            ROS_INFO("Landmark!");
         } else {
             info.header = location.header;
             info.id = 0;
             info.distance = 9999;
+            ROS_INFO("NOTHING!");
         }
 
         infoPub.publish(info);
