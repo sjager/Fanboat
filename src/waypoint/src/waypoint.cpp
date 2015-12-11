@@ -67,7 +67,7 @@ void determineState() {
             currentState = AVOID;
         }
         //If the fanboat is finally there, it's time to find the next landmark
-        else if ((infoMsg.curCamDistance <= infoMsg.tgtCamDistance) && ((ros::Time::now() - lastFound).toSec() > 3))
+        else if ((infoMsg.curCamDistance <= infoMsg.tgtCamDistance) && ((ros::Time::now() - lastFound).toSec() > 6))
         {
             if(currentWaypointIndex < waypoints.size()-1)
             {
@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
         {
             case SEARCH :
                 finalControlMsg = searchMsg;
-				searchMsg.angle = infoMsg.curAngle;
+				searchMsg.angle = -1 * infoMsg.curAngle + 180; //I beieve that this will translate the current angle into an angle the control msg wants
                 controlPub.publish(searchMsg);
                 ROS_INFO("SEARCH!: M: %f; A: %f; I: %d", searchMsg.magnitude, searchMsg.angle, searchMsg.ignoreAngle); 
                 break;
