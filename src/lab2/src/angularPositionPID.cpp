@@ -10,8 +10,8 @@ fanboat_ll::fanboatMotors pubMsg;
 fanboat_ll::fanboatLL prevInputMsg;
 fanboat_ll::fanboatLL curInputMsg;
 
-const float BAND_WIDTH = 0.12;
-const float DEFAULT_POWER = 0.12;
+const float BAND_WIDTH = 0.1;
+const float DEFAULT_POWER = 0.1;
 
 double pParam;
 double dParam;
@@ -68,11 +68,11 @@ void angleInputCallback(const lab2::angle::ConstPtr& msg) {
 
     if(degreesToTurn > 0.0) {
       //turn left (ccw)
-      mot_r = .12;
+      mot_r = .1;
       mot_l = pParam * degreesToTurn + std::min(fabs(iParam * integral), iMax) + dParam * (degreesToTurn - prevDegreesToTurn) / (currentTS - prevTS);
     } else {
       //turn right (cw)
-      mot_l = .12;
+      mot_l = .1;
       degreesToTurn = -1 * degreesToTurn;
       prevDegreesToTurn = -1 * prevDegreesToTurn;
       mot_r = pParam * degreesToTurn + std::min(fabs(iParam * integral), iMax) + dParam * (degreesToTurn - prevDegreesToTurn) / (currentTS - prevTS);
@@ -110,8 +110,8 @@ int main(int argc, char **argv) {
 
   integral = 0;
   
-  pubMsg.right = .12;
-  pubMsg.left = .12;
+  pubMsg.right = .1;
+  pubMsg.left = .1;
 
   while(ros::ok()) {
     pub.publish(pubMsg);

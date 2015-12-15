@@ -1,0 +1,46 @@
+<launch>        
+  <node name="ir_range_node" pkg="lab2" type="ir_range_node" />
+  <node name="fanboat_serial" pkg="fanboat_ll" type="fanboat_serial.py" />
+  <node name="fanboat_interface_node" pkg="lab3" type="fanboat_interface_node" />
+
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node">
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <!-- <remap from="/usb_cam/image_raw" to="/image"/> -->
+  </node>
+
+  <node name="landmarkDetector" pkg="landmark_self_sim" type="landmarkDetector"> 
+    <remap from="image" to="/usb_cam/image_raw"/>
+  </node>
+  
+  <node name="angular_position_node" pkg="lab2" type="angular_position_node" />
+  <param name="pParam" value="0.03" />  
+  <param name="dParam" value="0.05" />
+  <param name="iParam" value="0.0" />
+  
+  <node name="mixer_node" pkg="lab2" type="mixer_node" />
+
+  <node name="avoid_state_node" pkg ="waypoint" type="avoid_state_node" />
+  
+  <node name="arduino_serial" pkg="waypoint" type="arduino_serial.py" />
+  <node name="arduino_search_node" pkg="waypoint" type="arduino_search_node" output="screen"/>
+  
+  <node name="pursue_state_node" pkg ="waypoint" type="pursue_state_node" />
+  <param name="forwardMagnitude" value=".7" />
+  <param name="slowOffset" value="0.05" />
+  
+  <node name="waypoint_node" pkg ="waypoint" type="waypoint_node" output="screen"/>
+  <rosparam param="waypoints">[32,68,80]</rosparam>
+
+  <node name="landmark_info_node" pkg ="waypoint" type="landmark_info_node" />
+  <param name="threshold" value=".2" />
+  
+  <node name="fanboat_info_node" pkg ="waypoint" type="fanboat_info_node" />
+  <param name="target_cam_distance" value=".7" />
+  <param name="target_IR_distance" value=".5" />
+
+</launch>
